@@ -19,7 +19,6 @@
 #include "acc-manager.hpp"
 #include "cli.hpp"
 
-#define PATH_MAX 1024
 
 static int make_ancestors(char *path, mode_t perm) {
         struct stat s;

@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package device;
+message device {
+    required string name = 1;
+    optional string pci = 2;
+    repeated string device_driver = 3;
+    repeated string library = 4;
+    optional string type = 5;
+    optional Status status = 6;
+    enum Status {
+        IDLE = 0;
+        USED = 1;
+    }
+}
+
+message device_list {
+    repeated device devices = 1;
+}

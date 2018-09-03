@@ -6,6 +6,7 @@
 #include <string>
 #include <list>
 #include <cinttypes>
+#include "device.pb.h"
 
 using namespace std;
 //
@@ -20,7 +21,7 @@ class Container{
         pid_t pid;
         string rootfs;
 };
-class Device{
+class Device {
     public:
         Device(string _name);
         list<string> getDeviceFilePaths();
@@ -32,6 +33,7 @@ class Device{
         uint16_t getDeviceID();
         uint16_t getSubVendorID();
         uint16_t getSubDeviceID();
+        string getName();
     private:
         string name;
         list<string> devFilePaths;

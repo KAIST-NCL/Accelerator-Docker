@@ -12,12 +12,12 @@ class DeviceDetector{
 
 class DeviceParser{
     public:
-        DeviceParser(string _configFilePath);
+        DeviceParser(char* _configFilePath);
         list<Device> parse();
+        list<Device> parse(const char* _configFilePath);
     private:
-        string configFilePath;
+        char* configFilePath;
         bool isListValid(list<Device> deviceList);
         bool isDeviceValid(Device device);
 };
-
 #endif
