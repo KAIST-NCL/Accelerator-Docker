@@ -1,33 +1,30 @@
 .PHONY:all
 
-INC_DIR := include
-SRC_DIR := src
 OUT_DIR := out
-BUILD_DIR := build
-TEST_DIR := test
-T_PARSER := t_parser
-TARGET := acc-manager
-SRCS := $(wildcard src/*)
-SRCS := $(notdir $(filter-out src/$(TARGET).cc, $(SRCS)))
-OBJS := $(SRCS:.cc=.o)
 
-FLAGS := -I $(INC_DIR) -I /usr/local/include -L/usr/local/lib -L$(BUILD_DIR) -lpci -lprotobuf
+RUNTIME_BIN := runc
+HOOK_BIN := fpga-runtime-hook
+MANAGER_BIN := fpga-manager
 
-all: $(clean) $(TARGET)
+all: runtime hook manager
 
-$(TARGET):
-	g++ $(SRC_DIR)/* -D_GNU_SOURCE $(FLAGS) -o $(OUT_DIR)/$@ -std=c++11
+pre:
+	@if [ ! -d "./$(OUT_DIR)" ]; then mkdir $(OUT_DIR); fi
 
-$(T_PARSER): $(clean) $(OBJS)
-	g++ $(TEST_DIR)/tb_device-detector.cc $(addprefix $(BUILD_DIR)/, $^)  $(FLAGS) -o $(OUT_DIR)/$@ -std=c++11
+runtime: pre
+	make -C $(CURDIR)/FPGA-Runtime
+	mv $(CURDIR)/FPGA-Runtime/$(OUT_DIR)/$(RUNTIME_BIN) $(OUT_DIR)/$(RUNTIME_BIN)
 
-%.o: 
-	g++ -c -o $(BUILD_DIR)/$@ $(SRC_DIR)/$*.cc $(FLAGS) -std=c++11
+hook: pre
+	make -C $(CURDIR)/FPGA-Runtime-Hook
+	mv $(CURDIR)/FPGA-Runtime-Hook/$(OUT_DIR)/$(HOOK_BIN) $(OUT_DIR)/$(HOOK_BIN)
 
-install:
-	cp $(OUT_DIR)/acc-manager /usr/bin/$(TARGET)
+manager: pre
+	make -C $(CURDIR)/FPGA-Manager
+	mv $(CURDIR)/FPGA-Manager/$(OUT_DIR)/$(MANAGER_BIN) $(OUT_DIR)/$(MANAGER_BIN)
 
 clean:
-	rm $(BUILD_DIR)/*
-	rm $(OUT_DIR)/$(TARGET)
-	rm /usr/bin/$(TARGET)
+	make -C $(CURDIR)/FPGA-Runtime clean
+	make -C $(CURDIR)/FPGA-Runtime-Hook clean
+	make -C $(CURDIR)/FPGA-Manager clean
+	rm -rf $(OUT_DIR)

@@ -16,8 +16,8 @@ To start FPGA-Docker, write "device.fdocker" under ${FPGA-Docker-HOME}/out
 - protocol buffer (C++)
 
 
-### How to run Accelerator-Docker
+### How to run FPGA-Docker
 
-` docker run --runtime=acc-runtime -e ACC_VISIBLE_DEVICES=AlteraA10GX -e ACC_REQUIRE_LIBRARY=/usr/lib/libOpenCL.so `
+` docker run --runtime=fpga-runtime -e ACC_VISIBLE_DEVICES=AlteraA10GX -e ACC_REQUIRE_LIBRARY=/usr/lib/libOpenCL.so `
 
 
