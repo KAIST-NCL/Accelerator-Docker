@@ -1,7 +1,7 @@
 # FPGA-Docker
 
 #### KAIST NCL 
-#### Writer: Seong Hyun Kim, Eunju Yang
+#### Writer: Sung Hyun Kim, Eunju Yang
 
 FPGA-Docker supports running container with accessibility to a target FPGA.
 It manages status of all FPGAs in a server.

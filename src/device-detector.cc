@@ -19,16 +19,22 @@ list<Device> DeviceDetector::detect(){
     return devs;
 }
 
+list<Device> DeviceDetector::detect(list<Device> _dev){
+    list<Device> devs;
+
+    _dev.insert(_dev.end(),devs.begin(),devs.end());
+    return _dev;
+}
+
 DeviceParser::DeviceParser(char* _configFilePath) : configFilePath(_configFilePath){}
 
 list<Device> DeviceParser::parse(){return parse(configFilePath);}
-
 list<Device> DeviceParser::parse(const char* _configFilePath){
 
     list<Device> devs;
 
     device::device_list *dev_list = new device::device_list();
-    int fd = open(configFilePath, O_RDONLY);
+    int fd = open(_configFilePath, O_RDONLY);
     protobuf::io::FileInputStream fileInput(fd);
     protobuf::TextFormat::Parse(&fileInput, dev_list);
 

@@ -7,6 +7,7 @@ class DeviceDetector{
     public:
         DeviceDetector();
         list<Device> detect();
+        list<Device> detect(list<Device> _dev);
     private:
 };
 

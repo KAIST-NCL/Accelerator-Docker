@@ -12,10 +12,10 @@ list<Driver> DriverManager::getAllDrivers(){
     return drivers;
 }
 
-int driver_parse(int argc, char** argv, Context *ctx){
+bool driver_parse(int argc, char** argv, Context *ctx){
 
 }
 
-int driver_command(Context *ctx){
+bool driver_command(Context *ctx){
 
 }
