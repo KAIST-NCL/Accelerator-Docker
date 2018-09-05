@@ -1,4 +1,4 @@
-#FPGA-Manager
+# FPGA-Manager
 
-##Installation
-###Dependencies
+## Installation
+### Dependencies
