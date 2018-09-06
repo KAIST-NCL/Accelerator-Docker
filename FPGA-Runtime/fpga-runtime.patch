@@ -1,0 +1,63 @@
+diff --git a/Makefile b/Makefile
+index d490a3f..2758540 100644
+--- a/Makefile
++++ b/Makefile
+@@ -30,7 +30,7 @@ SHELL := $(shell command -v bash 2>/dev/null)
+ .DEFAULT: runc
+ 
+ runc: $(SOURCES)
+-	$(GO) build -buildmode=pie $(EXTRA_FLAGS) -ldflags "-X main.gitCommit=${COMMIT} -X main.version=${VERSION} $(EXTRA_LDFLAGS)" -tags "$(BUILDTAGS)" -o runc .
++	$(GO) build -buildmode=pie $(EXTRA_FLAGS) -ldflags "-X main.gitCommit=${COMMIT} -X main.version=${VERSION} $(EXTRA_LDFLAGS)" -tags "$(BUILDTAGS)" -o fpga-runtime .
+ 
+ all: runc recvtty
+ 
+diff --git a/utils.go b/utils.go
+index 5165336..25762a1 100644
+--- a/utils.go
++++ b/utils.go
+@@ -3,6 +3,7 @@ package main
+ import (
+ 	"fmt"
+ 	"os"
++	"os/exec"
+ 	"path/filepath"
+ 	"strconv"
+ 	"strings"
+@@ -54,6 +55,26 @@ func fatal(err error) {
+ 	os.Exit(1)
+ }
+ 
++func addACCHook(context *cli.Context, spec *specs.Spec) error {
++	path, err := exec.LookPath("acc-runtime-hook")
++	if err != nil {
++		return err
++	}
++	args := []string{path}
++	if spec.Hooks == nil {
++		spec.Hooks = &specs.Hooks{}
++	}
++	spec.Hooks.Prestart = append(spec.Hooks.Prestart, specs.Hook{
++		Path: path,
++		Args: append(args, "prestart"),
++	})
++	spec.Hooks.Poststop = append(spec.Hooks.Poststop, specs.Hook{
++		Path: path,
++		Args: append(args, "poststop"),
++	})
++	return nil
++}
++
+ // setupSpec performs initial setup based on the cli.Context for the container
+ func setupSpec(context *cli.Context) (*specs.Spec, error) {
+ 	bundle := context.String("bundle")
+@@ -66,6 +87,10 @@ func setupSpec(context *cli.Context) (*specs.Spec, error) {
+ 	if err != nil {
+ 		return nil, err
+ 	}
++
++	if err = addACCHook(context, spec); err != nil {
++		return nil, err
++	}
+ 	return spec, nil
+ }
+ 

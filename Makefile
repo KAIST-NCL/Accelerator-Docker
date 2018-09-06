@@ -2,7 +2,7 @@
 
 OUT_DIR := out
 
-RUNTIME_BIN := runc
+RUNTIME_BIN := fpga-runtime
 HOOK_BIN := fpga-runtime-hook
 MANAGER_BIN := fpga-manager
 
@@ -22,6 +22,11 @@ hook: pre
 manager: pre
 	make -C $(CURDIR)/FPGA-Manager
 	mv $(CURDIR)/FPGA-Manager/$(OUT_DIR)/$(MANAGER_BIN) $(OUT_DIR)/$(MANAGER_BIN)
+
+install:
+	mv $(CURDIR)/out/* /usr/bin/*
+uninstall:
+	rm -f /usr/bin/$(RUNTIME_BIN) /usr/bin/$(HOOK_BIN) /usr/bin/$(MANAGER_BIN)
 
 clean:
 	make -C $(CURDIR)/FPGA-Runtime clean
