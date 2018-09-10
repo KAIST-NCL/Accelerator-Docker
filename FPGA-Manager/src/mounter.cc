@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-Mounter::Mounter(Container _cont) : cont(_cont) {}
+Mounter::Mounter(Context* _cont) : cont(_cont) {}
 bool Mounter::mountDevices(list<Device> devices){
     bool result = true;
     for (list<Device>::iterator it = devices.begin(); result && it != devices.end(); it++){
@@ -13,8 +13,8 @@ bool Mounter::mountDevices(list<Device> devices){
 
 bool Mounter::mountDevice(Device device){
     bool result = true;
-    list<string> dev_files = device.getDeviceFilePaths();
-    list<LibraryNode> lib_files = device.getLibraries();
+    list<string> dev_files = device.getDevices();
+    list<string> lib_files = device.getLibraries();
     result = result && mountDeviceFiles(dev_files) && mountLibraries(lib_files); 
     return result;
 }
@@ -23,7 +23,7 @@ bool Mounter::mountDeviceFiles(list<string> dev_files){
     char *cg_path;
     bool result = true;
     
-    cg_path = findCgroupPath(cont.getPid());
+    cg_path = findCgroupPath(cont->getPid());
     for (list<string>::iterator it = dev_files.begin(); result && it != dev_files.end(); it++){
         result = result && mountDeviceFile(*it,cg_path);
     }
@@ -39,30 +39,30 @@ bool Mounter::mountDeviceFile(string dev, char* cg_path){
     stat(src, &s);
     //src 있는 파일인지 검사 --> detector에서!
 
-    strcpy(dst, cont.getRootFs().c_str());
+    strcpy(dst, cont->getRootFs().c_str());
     strcat(dst, src);
 
     int fd_mnt_ori;
     fd_mnt_ori = parseNamespace(0);
-    enterNamespace(cont.getPid(), NULL);
+    enterNamespace(cont->getPid(), NULL);
     createDev(src, dst, s);
-    setCgroup(cont.getPid(), s,cg_path);
+    setCgroup(cont->getPid(), s,cg_path);
     enterNamespace(0, &fd_mnt_ori);
     return true;
 }
 
-bool Mounter::mountLibraries(list<LibraryNode> lib_files){
+bool Mounter::mountLibraries(list<string> lib_files){
     bool result = true;
-    for (list<LibraryNode>::iterator it = lib_files.begin(); result && it != lib_files.end(); it++){
+    for (list<string>::iterator it = lib_files.begin(); result && it != lib_files.end(); it++){
         result = result && mountLibrary(*it);
     }
     return result;
 }
 
-bool Mounter::mountLibrary(LibraryNode lib){
-    string src = lib.getSrc();
-    string dst_rel = lib.getDst();
-    string dst = join_rootfs_path(cont.getRootFs(),dst_rel);
+bool Mounter::mountLibrary(string lib){
+    string src = lib;
+    string dst_rel = lib;
+    string dst = join_rootfs_path(cont->getRootFs(),dst_rel);
     const char* src_c = src.c_str();
     const char* dst_c = dst.c_str();
     char src_tmp[PATH_LEN_MAX],dir_tmp[PATH_LEN_MAX];

@@ -17,9 +17,9 @@ $(TARGET):
 	@echo Setting temp. GOPATH as [$(TMP_GO_ABS)]
 	$(ENV_GOPATH) go get -d $(RUNC_REPO)/...
 	patch -d$(TMP_GO_ABS)/src/$(RUNC_REPO) -p1 < fpga-runtime.patch
-	$(ENV_GOPATH) make -C $(TMP_GO_ABS)/src/$(RUNC_REPO)/
+	$(ENV_GOPATH) make -C $(TMP_GO_ABS)/src/$(RUNC_REPO)/ BUILDTAGS='apparmor seccomp'
 	@if [ ! -d "$(OUT_DIR)" ]; then mkdir $(OUT_DIR); fi
-	@mv $(TMP_GO_ABS)/src/$(RUNC_REPO)/$(TARGET) $(OUT_DIR)/$(TARGET)
+	@mv $(TMP_GO_ABS)/src/$(RUNC_REPO)/$@ $(OUT_DIR)/$@
 
 clean: 
 	rm -rf $(TMP_GO_PATH)

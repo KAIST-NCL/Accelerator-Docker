@@ -1,7 +1,6 @@
 #include "common.hpp"
 #include <iostream>
-Context::Context(): pid(0){}
-Context::Context(uid_t _uid, gid_t _gid) : uid(_uid),gid(_gid),pid(0){}
+Context::Context(uid_t _uid, gid_t _gid) : uid(_uid),gid(_gid),pid(0),rootfs(string("")){}
 bool Context::validate(){
     char proc_dir[PATH_LEN_MAX];
     struct stat s_root, s_proc;
@@ -24,11 +23,7 @@ bool Context::validate(){
     }
     return true;
 }
-
-Container::Container(uid_t _uid, gid_t _gid, pid_t _pid, string _rootfs) : uid(_uid), gid(_gid), pid(_pid), rootfs(_rootfs){}
-pid_t Container::getPid(){ return pid; }
-string Container::getRootFs(){ return rootfs; }
-bool Container::parseOwner(){
+bool Context::parseOwner(){
     char proc_dir[PATH_LEN_MAX];
     struct stat s_proc;
     int n;
@@ -45,20 +40,40 @@ bool Container::parseOwner(){
     return true;
 }
 
+uid_t Context::getUid(){ return uid; }
+gid_t Context::getGid(){ return gid; }
+pid_t Context::getPid(){ return pid; }
+string Context::getRootFs(){ return rootfs; }
+list<string> Context::getReqDevices(){ return req_devices_name; }
+char* Context::getDeviceFilePath(){ return device_file_path; }
+char* Context::getStatusFilePath(){ return status_file_path; }
+
+void Context::setPid(pid_t _pid){pid=_pid;}
+void Context::setRootFs(string _rootfs){rootfs=_rootfs;}
+void Context::setDeviceFilePath(char* path){device_file_path=path;}
+void Context::setStatusFilePath(char* path){status_file_path=path;}
+void Context::addReqDevice(string dev){req_devices_name.push_back(dev);}
+
 Device::Device(string _name) : name(_name){
     status = Status::AVAILABLE;
     pid = 0;
 }
-list<string> Device::getDeviceFilePaths(){ return devFilePaths; }
-list<LibraryNode> Device::getLibraries(){ return libs; }
-void Device::addDeviceFilePath(string path){
-    devFilePaths.push_back(path);
+list<string> Device::getDevices(){ return devs; }
+list<string> Device::getLibraries(){ return libs; }
+void Device::addDevice(string path){
+    devs.push_back(path);
 }
-void Device::addLibraryNode(LibraryNode lib){
+void Device::addLibrary(string lib){
     libs.push_back(lib);
 }
 string Device::getName(){
     return name;
+}
+string Device::getType(){
+    return type;
+}
+void Device::setType(string _type){
+    type = _type;
 }
 Device::Status Device::getStatus(){
     return status;
@@ -108,13 +123,4 @@ int Driver::getSubVendorID(){
 }
 int Driver::getSubDeviceID(){
     return subDeviceID;
-}
-
-LibraryNode::LibraryNode(string _src, string _dst)
- : src(_src), dst(_dst){}
-string LibraryNode::getSrc(){
-    return src;
-}
-string LibraryNode::getDst(){
-    return dst;
 }

@@ -1,20 +1,21 @@
 #include "cli.hpp"
 
-#define COMMAND_CNT 2
+#define COMMAND_CNT 3
 
 Command command_list[COMMAND_CNT] = {
     { "configure", &configure_parse, &configure_command },
-    //{"release",&release_parse,&release_command},
+    { "release", &release_parse, &release_command},
     { "list", &list_parse, &list_command }
-    //{"driver",&driver_parse, &driver_command}
 };
 
 int main(int argc, char** argv)
 {
-    Context ctx((uid_t)-1, (gid_t)-1);
-
     int index, argc_n;
     char** argv_n;
+
+    Context ctx((uid_t)-1, (gid_t)-1);
+    ctx.setDeviceFilePath((char*)USR_DEF_DEV);
+    ctx.setStatusFilePath((char*)STATUS_CFG);
 
     char** it;
     for (it = argv; it < argv + argc; it++) {

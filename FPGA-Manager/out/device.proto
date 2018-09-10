@@ -8,6 +8,7 @@ message device {
     repeated string library = 4;
     optional string type = 5;
     optional Status status = 6;
+    optional int32 pid = 7;
     enum Status {
         IDLE = 0;
         USED = 1;

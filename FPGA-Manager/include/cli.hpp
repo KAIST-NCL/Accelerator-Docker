@@ -17,10 +17,6 @@ class Context;
 bool configure_parse(int, char**, Context *);
 bool configure_command(Context *);
 
-//extern const struct argp driver_usage;
-bool driver_parse(int, char**, Context *);
-bool driver_command(Context *);
-
 //extern const struct argp release_usage;
 bool release_parse(int, char**, Context *);
 bool release_command(Context *);

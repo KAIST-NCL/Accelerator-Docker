@@ -36,46 +36,50 @@
     # error "unsupported architecture"
 #endif
 
-#define USR_DEF_DEV     "/etc/fpga-docker/devices.json"
-#define STATUS_CFG      "/etc/fpga-docker/stat.json"
+#define USR_DEF_DEV     "/etc/fpga-docker/device.pbtxt"
+#define STATUS_CFG      "/etc/fpga-docker/stat.pb"
 
 #define ERR_CODE_NO_ROOTFS 21
 #define ERR_CODE_NO_PROC_DIR 22
 #define ERR_CODE_PID_NOT_VALID 23
+#define ERR_CODE_PROCESS_STILL_RUNNING 24
 
 using namespace std;
 //
+
 class Device;
-class LibraryNode;
 
 class Context {
     public:
-        Context();
         Context(uid_t,gid_t);
         bool validate();
-        /* main */
-        uid_t uid;
-        gid_t gid;
+        bool parseOwner();
 
-        /* configure */
-        pid_t pid;
-        string rootfs;
-        list<string> devices_name;
-        list<Device> devices;
-};
-
-class Container{
-    public:
-        Container(uid_t _uid, gid_t _gid, pid_t _pid, string _rootfs);
+        uid_t getUid();
+        gid_t getGid();
         pid_t getPid();
         string getRootFs();
-        bool parseOwner();
+        list<string> getReqDevices();
+        char* getDeviceFilePath();
+        char* getStatusFilePath();
+
+        void setPid(pid_t);
+        void setRootFs(string);
+        void setDeviceFilePath(char*);
+        void setStatusFilePath(char*);
+        void addReqDevice(string);
     private:
         uid_t uid;
         gid_t gid;
         pid_t pid;
         string rootfs;
+
+        char* device_file_path;
+        char* status_file_path;
+
+        list<string> req_devices_name;
 };
+
 class Device{
     public:
         enum Status{
@@ -83,27 +87,31 @@ class Device{
             UNAVAILABLE
         };
         Device(string _name);
-        list<string> getDeviceFilePaths();
-        list<LibraryNode> getLibraries();
-        void addDeviceFilePath(string path);
-        void addLibraryNode(LibraryNode lib);
+
+        list<string> getDevices();
+        list<string> getLibraries();
         string getName();
+        string getType();
         Device::Status getStatus();
-        void setStatus(Device::Status);
         pid_t getPid();
-        void setPid(pid_t);
         string getPciSlot();
-        void setPciSlot(string);
         uint16_t getVendorID();
         uint16_t getDeviceID();
         uint16_t getSubVendorID();
         uint16_t getSubDeviceID();
+        void setType(string);
+        void setStatus(Device::Status);
+        void setPid(pid_t);
+        void setPciSlot(string);
+        void addDevice(string);
+        void addLibrary(string);
     private:
         string name;
+        string type;
         Device::Status status;
         pid_t pid;
-        list<string> devFilePaths;
-        list<LibraryNode> libs;
+        list<string> devs;
+        list<string> libs;
         string pciSlot;
         uint16_t vendorID;
         uint16_t deviceID;
@@ -115,6 +123,7 @@ class Driver{
         Driver(string _name, int _vendorID, int _deviceID, int _subVendorID, int _subDeviceID);
         list<string> getModules();
         void addModuleNode(string mod);
+
         int getVendorID();
         int getDeviceID();
         int getSubVendorID();
@@ -127,16 +136,6 @@ class Driver{
         int deviceID;
         int subVendorID;
         int subDeviceID;
-};
-
-class LibraryNode{
-    public:
-        LibraryNode(string _src, string _dst);
-        string getSrc();
-        string getDst();
-    private:
-        string src;
-        string dst;
 };
 
 #endif

@@ -16,17 +16,17 @@
 
 class Mounter{
     public:
-        Mounter(Container cont);
-        bool mountDevices(list<Device> devices);
-        bool mountDevice(Device device);
+        Mounter(Context*);
+        bool mountDevices(list<Device>);
+        bool mountDevice(Device);
     private:
-        Container cont;
-        bool mountDeviceFiles(list<string> devs);
-        bool mountDeviceFile(string dev, char* cg_path);
-        bool mountLibraries(list<LibraryNode> libs);
-        bool mountLibrary(LibraryNode lib);
+        Context* cont;
+        bool mountDeviceFiles(list<string>);
+        bool mountDeviceFile(string, char*);
+        bool mountLibraries(list<string>);
+        bool mountLibrary(string);
 
-        bool createDev(char* src, char* dst,struct stat s);
+        bool createDev(char*, char*,struct stat);
 };
 
 #endif

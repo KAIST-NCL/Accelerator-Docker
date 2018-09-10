@@ -6,25 +6,29 @@ RUNTIME_BIN := fpga-runtime
 HOOK_BIN := fpga-runtime-hook
 MANAGER_BIN := fpga-manager
 
-all: runtime hook manager
+all: $(RUNTIME_BIN) $(HOOK_BIN) $(MANAGER_BIN)
 
 pre:
 	@if [ ! -d "./$(OUT_DIR)" ]; then mkdir $(OUT_DIR); fi
 
-runtime: pre
+$(RUNTIME_BIN): pre
 	make -C $(CURDIR)/FPGA-Runtime
-	mv $(CURDIR)/FPGA-Runtime/$(OUT_DIR)/$(RUNTIME_BIN) $(OUT_DIR)/$(RUNTIME_BIN)
+	cp $(CURDIR)/FPGA-Runtime/$(OUT_DIR)/$@ $(OUT_DIR)/$@
 
-hook: pre
+$(HOOK_BIN): pre
 	make -C $(CURDIR)/FPGA-Runtime-Hook
-	mv $(CURDIR)/FPGA-Runtime-Hook/$(OUT_DIR)/$(HOOK_BIN) $(OUT_DIR)/$(HOOK_BIN)
+	cp $(CURDIR)/FPGA-Runtime-Hook/$(OUT_DIR)/$@ $(OUT_DIR)/$@
 
-manager: pre
+$(MANAGER_BIN): pre
 	make -C $(CURDIR)/FPGA-Manager
-	mv $(CURDIR)/FPGA-Manager/$(OUT_DIR)/$(MANAGER_BIN) $(OUT_DIR)/$(MANAGER_BIN)
+	cp $(CURDIR)/FPGA-Manager/$(OUT_DIR)/$@ $(OUT_DIR)/$@
 
 install:
-	mv $(CURDIR)/out/* /usr/bin/*
+	\cp $(CURDIR)/$(OUT_DIR)/$(RUNTIME_BIN) /usr/bin/$(RUNTIME_BIN)
+	\cp $(CURDIR)/$(OUT_DIR)/$(HOOK_BIN) /usr/bin/$(HOOK_BIN)
+	\cp $(CURDIR)/$(OUT_DIR)/$(MANAGER_BIN) /usr/bin/$(MANAGER_BIN)
+	if [ -f "/etc/docker/daemon.json" ]; then mv /etc/docker/daemon.json /etc/docker/daemon.json.bak; fi
+	\cp ./daemon.json /etc/docker/daemon.json
 uninstall:
 	rm -f /usr/bin/$(RUNTIME_BIN) /usr/bin/$(HOOK_BIN) /usr/bin/$(MANAGER_BIN)
 

@@ -43,8 +43,18 @@ func prestartHook() {
 	}
 }
 
-func poststartHook() {
+func poststopHook() {
+	container := parseContainerConfig()
 
+	args := []string{getManagerPath()}
+	args = append(args, "release")
+	args = append(args, fmt.Sprintf("--pid=%s", strconv.FormatUint(uint64(container.pid), 10)))
+
+	fmt.Printf("exec command : %v\n", args)
+	err := syscall.Exec(args[0], args, os.Environ())
+	if err != nil {
+		log.Panicln("exec error : ", err)
+	}
 }
 
 func main() {
@@ -60,9 +70,9 @@ func main() {
 		prestartHook()
 		os.Exit(0)
 	case "poststart":
-		poststartHook()
 		os.Exit(0)
 	case "poststop":
+		poststopHook()
 		os.Exit(0)
 	default:
 		os.Exit(2)

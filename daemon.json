@@ -1,0 +1,8 @@
+{
+    "runtimes": {
+        "fpga-runtime": {
+            "path": "/usr/bin/fpga-runtime",
+            "runtimeArgs": []
+        }
+    }
+}

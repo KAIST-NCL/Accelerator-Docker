@@ -28,7 +28,7 @@ index 5165336..25762a1 100644
  }
  
 +func addACCHook(context *cli.Context, spec *specs.Spec) error {
-+	path, err := exec.LookPath("acc-runtime-hook")
++	path, err := exec.LookPath("fpga-runtime-hook")
 +	if err != nil {
 +		return err
 +	}
