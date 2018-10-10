@@ -5,6 +5,7 @@
 #include <cstring>
 #include <string>
 #include <list>
+#include <array>
 #include <iostream>
 #include <cinttypes>
 #include <sys/stat.h>
@@ -12,6 +13,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <err.h>
+#include <stdlib.h>
 
 #define PATH_LEN_MAX 1024
 
@@ -90,6 +92,8 @@ class Device{
 
         list<string> getDevices();
         list<string> getLibraries();
+        list<array<string,2>> getFiles();
+        list<array<string,2>> getEnvs();
         string getName();
         string getType();
         Device::Status getStatus();
@@ -105,6 +109,10 @@ class Device{
         void setPciSlot(string);
         void addDevice(string);
         void addLibrary(string);
+        void addFile(string,string);
+        void addEnv(string,string);
+
+        bool validate();
     private:
         string name;
         string type;
@@ -112,6 +120,8 @@ class Device{
         pid_t pid;
         list<string> devs;
         list<string> libs;
+        list<array<string,2>> files;
+        list<array<string,2>> envs;
         string pciSlot;
         uint16_t vendorID;
         uint16_t deviceID;

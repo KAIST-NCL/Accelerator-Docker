@@ -15,7 +15,8 @@ bool Mounter::mountDevice(Device device){
     bool result = true;
     list<string> dev_files = device.getDevices();
     list<string> lib_files = device.getLibraries();
-    result = result && mountDeviceFiles(dev_files) && mountLibraries(lib_files); 
+    list<array<string,2>> files = device.getFiles();
+    result = result && mountDeviceFiles(dev_files) && mountLibraries(lib_files) && mountFiles(files); //TODO : set ENV
     return result;
 }
 
@@ -37,7 +38,6 @@ bool Mounter::mountDeviceFile(string dev, char* cg_path){
 
     strcpy(src, dev.c_str());
     stat(src, &s);
-    //src 있는 파일인지 검사 --> detector에서!
 
     strcpy(dst, cont->getRootFs().c_str());
     strcat(dst, src);
@@ -51,6 +51,21 @@ bool Mounter::mountDeviceFile(string dev, char* cg_path){
     return true;
 }
 
+bool Mounter::createDev(char *src, char *dst, struct stat s){
+    mode_t mode, perm;
+    char *p;
+    int fd;
+
+    mode = s.st_mode;
+
+    p = strdup(dst);
+    perm = (0777 & ~getUmask()) | S_IWUSR | S_IXUSR;
+    makeAncestors(dirname(p), perm);
+    perm = 0644 & ~getUmask() & mode;
+    mknod(dst, perm | S_IFCHR, major(s.st_rdev) << 8 + minor(s.st_rdev));
+    return true;
+}
+
 bool Mounter::mountLibraries(list<string> lib_files){
     bool result = true;
     for (list<string>::iterator it = lib_files.begin(); result && it != lib_files.end(); it++){
@@ -60,8 +75,20 @@ bool Mounter::mountLibraries(list<string> lib_files){
 }
 
 bool Mounter::mountLibrary(string lib){
-    string src = lib;
-    string dst_rel = lib;
+    string base = lib.substr(lib.find_last_of("/\\") + 1);
+    string dst = "/usr/lib/"+base;
+    mountFile(lib,dst);
+}
+
+bool Mounter::mountFiles(list<array<string,2>> files){
+    bool result = true;
+    for (list<array<string,2>>::iterator it = files.begin(); result && it != files.end(); it++){
+        result = result && mountFile(it->at(0),it->at(1));
+    }
+    return result;
+}
+
+bool Mounter::mountFile(string src,string dst_rel){
     string dst = join_rootfs_path(cont->getRootFs(),dst_rel);
     const char* src_c = src.c_str();
     const char* dst_c = dst.c_str();
@@ -70,8 +97,9 @@ bool Mounter::mountLibrary(string lib){
     mode_t perm;
     
     /*
-        Binary 경로 + $PATH
-        Library 경로 + $INTELFPGAOCLSDKROOT
+        TODO : Move to parser
+        Binary Path + $PATH
+        Library Path + $INTELFPGAOCLSDKROOT
     */
     if(src.empty() || dst.empty())
         return false;
@@ -91,6 +119,7 @@ bool Mounter::mountLibrary(string lib){
     if(S_ISDIR(mode.st_mode) || S_ISLNK(mode.st_mode)){
         return false;
     }else if(S_ISREG(mode.st_mode)){
+        //TODO : MOUNT not COPY
         std::ifstream srce(src_c, std::ios::binary);
         std::ofstream dest(dst_c, std::ios::binary);
         dest << srce.rdbuf();
@@ -100,19 +129,4 @@ bool Mounter::mountLibrary(string lib){
         return false;
     }
     return false;
-}
-
-bool Mounter::createDev(char *src, char *dst, struct stat s){
-    mode_t mode, perm;
-    char *p;
-    int fd;
-
-    mode = s.st_mode;
-
-    p = strdup(dst);
-    perm = (0777 & ~getUmask()) | S_IWUSR | S_IXUSR;
-    makeAncestors(dirname(p), perm);
-    perm = 0644 & ~getUmask() & mode;
-    mknod(dst, perm | S_IFCHR, major(s.st_rdev) << 8 + minor(s.st_rdev));
-    return true;
 }

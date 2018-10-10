@@ -49,7 +49,6 @@ bool Manager::releaseDevices(){
         if(it_dev->getStatus() == Device::Status::UNAVAILABLE && kill(it_dev->getPid(),0) < 0 ){
             it_dev->setStatus(Device::Status::AVAILABLE);
             it_dev->setPid(0);
-            //delete device files, lib files
         }
     }
     updateStatusFile();

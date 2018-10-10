@@ -1,13 +1,28 @@
 devices :[{
     name: "Arria10GX_ref0",
+    type:"FPGA",
     pci: "0000:05:00.0",
     device_driver:[
         "/dev/acla10_ref0"
     ],
     library:[
-        "/usr/lib/libOpenCL.so",
-        "/usr/lib/x86_64-linux-gnu/libOpenCL.so.1"
+        "/usr/lib/libOpenCL.so.1",
+        "/usr/lib/libalteracl.so",
+        "/usr/lib/libacl_emulator_kernel_rt.so",
+        "/usr/lib/libelf.so.0"
     ],
-    type:"FPGA",
-    status: IDLE
+    file:[{
+        src: "/SOMEWHERE1/lib/libaltera_a10_ref_mmd.so",
+        dst: "/SOMEWHERE2/lib/libaltera_a10_ref_mmd.so"
+    },{
+        src: "/etc/OpenCL/vendors/Altera.icd",
+        dst: "/etc/OpenCL/vendors/Altera.icd"
+    },{
+        src: "/opt/Intel/OpenCL/Boards/a10_ref.fcd",
+        dst: "/opt/Intel/OpenCL/Boards/a10_ref.fcd"
+    }],
+    env:[{
+        key: "EXAMPLE",
+        val: "val"
+    }]
 }]

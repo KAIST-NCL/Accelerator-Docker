@@ -77,8 +77,17 @@ list<Device> DeviceParser::protoToDevice(device::device_list* proto_dev){
         for(int i = 0; i < t_dev.library_size(); i++)
             dev.addLibrary(t_dev.library(i));
 
+        // File path
+        for(int i = 0; i < t_dev.file_size(); i++)
+            dev.addFile(t_dev.file(i).src(),t_dev.file(i).dst());
+
+        // Env var.
+        for(int i = 0; i < t_dev.env_size(); i++)
+            dev.addEnv(t_dev.env(i).key(),t_dev.env(i).val());
+
         // push back to device list
-        devs.push_back(dev);
+        if(dev.validate())
+            devs.push_back(dev);
     }
     return devs;
 }

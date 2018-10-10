@@ -60,11 +60,19 @@ Device::Device(string _name) : name(_name){
 }
 list<string> Device::getDevices(){ return devs; }
 list<string> Device::getLibraries(){ return libs; }
+list<array<string,2>> Device::getFiles(){ return files; }
+list<array<string,2>> Device::getEnvs(){ return envs; }
 void Device::addDevice(string path){
     devs.push_back(path);
 }
 void Device::addLibrary(string lib){
     libs.push_back(lib);
+}
+void Device::addFile(string src, string dst){
+    files.push_back({src, dst});
+}
+void Device::addEnv(string key, string val){
+    envs.push_back({key, val});
 }
 string Device::getName(){
     return name;
@@ -104,6 +112,10 @@ uint16_t Device::getSubVendorID(){
 }
 uint16_t Device::getSubDeviceID(){
     return subDeviceID;
+}
+bool Device::validate(){
+    //TODO : validity check (existence of files / pci port ...)
+    return true;
 }
 
 Driver::Driver(string _name, int _vendorID, int _deviceID, int _subVendorID, int _subDeviceID)

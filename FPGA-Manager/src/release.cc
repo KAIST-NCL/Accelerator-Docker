@@ -15,10 +15,6 @@ bool release_parse(int argc, char** argv, Context* ctx)
         errx(ERR_CODE_PID_NOT_VALID,"not valid pid");
         return false;
     }
-    //if(kill(ctx->getPid(),0) >= 0){
-    //    errx(ERR_CODE_PROCESS_STILL_RUNNING,"process [%d] still running",ctx->getPid());
-    //    return false;
-    //}
     return true;
 }
 

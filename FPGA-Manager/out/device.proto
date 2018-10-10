@@ -1,14 +1,25 @@
 syntax = "proto2";
 
 package device;
+
+message env_entry {
+    required string key = 1;
+    required string val = 2;
+}
+message file_entry {
+    required string src = 1;
+    required string dst = 2;
+}
 message device {
     required string name = 1;
     optional string pci = 2;
     repeated string device_driver = 3;
     repeated string library = 4;
-    optional string type = 5;
-    optional Status status = 6;
-    optional int32 pid = 7;
+    repeated file_entry file = 5;
+    repeated env_entry env = 6;
+    optional string type = 7;
+    optional Status status = 8;
+    optional int32 pid = 9;
     enum Status {
         IDLE = 0;
         USED = 1;
