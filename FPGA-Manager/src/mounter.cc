@@ -62,7 +62,7 @@ bool Mounter::createDev(char *src, char *dst, struct stat s){
     perm = (0777 & ~getUmask()) | S_IWUSR | S_IXUSR;
     makeAncestors(dirname(p), perm);
     perm = 0644 & ~getUmask() & mode;
-    mknod(dst, perm | S_IFCHR, major(s.st_rdev) << 8 + minor(s.st_rdev));
+    mknod(dst, perm | S_IFCHR, s.st_rdev);
     return true;
 }
 
@@ -119,10 +119,12 @@ bool Mounter::mountFile(string src,string dst_rel){
     if(S_ISDIR(mode.st_mode) || S_ISLNK(mode.st_mode)){
         return false;
     }else if(S_ISREG(mode.st_mode)){
-        //TODO : MOUNT not COPY
-        std::ifstream srce(src_c, std::ios::binary);
         std::ofstream dest(dst_c, std::ios::binary);
-        dest << srce.rdbuf();
+        dest.close();
+        const char* src_c = src.c_str();
+        const char* dst_c = dst.c_str();
+        mount(src_c,dst_c,NULL,MS_BIND,NULL);
+        mount(NULL,dst_c,NULL,MS_BIND | MS_REMOUNT | MS_RDONLY | MS_NODEV | MS_NOSUID,NULL);
         chmod(dst_c,mode.st_mode);
         return true;
     }else{
