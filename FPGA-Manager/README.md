@@ -1,10 +1,5 @@
 # FPGA-Manager
 
-## Installation
-### Dependencies
-- protocol buffer (C++)
-- libpci-dev
-
 ### TODO
 - Error handling --> using exception
 - Parser/detector validity test logic
