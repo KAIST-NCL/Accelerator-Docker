@@ -27,6 +27,7 @@ class Mounter{
         bool mountLibrary(string);
         bool mountFiles(list<array<string,2>>);
         bool mountFile(string,string);
+        bool setEnvs(list<array<string,2>>);
 
         bool createDev(char*, char*,struct stat);
 };

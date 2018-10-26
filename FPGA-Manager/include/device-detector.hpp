@@ -9,6 +9,7 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include "device.pb.h"
 #include "common.hpp"
+#include "utils.hpp"
 
 class DeviceDetector{
     public:

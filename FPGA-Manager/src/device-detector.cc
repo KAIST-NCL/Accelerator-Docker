@@ -50,7 +50,7 @@ bool DeviceParser::parse(list<Device>* to){
     }
 
     *to = devs_usr;
-    return true;
+    return isListValid(*to);
 }
 
 list<Device> DeviceParser::protoToDevice(device::device_list* proto_dev){
@@ -90,4 +90,46 @@ list<Device> DeviceParser::protoToDevice(device::device_list* proto_dev){
             devs.push_back(dev);
     }
     return devs;
+}
+
+bool DeviceParser::isListValid(list<Device> deviceList){
+    bool result = true;
+    for(list<Device>::iterator it = deviceList.begin() ; result && it != deviceList.end() ; it++){
+        result = result && isDeviceValid(*it);
+    }
+    return result;
+}
+
+bool DeviceParser::isDeviceValid(Device device){
+    //File existence check
+    list<string> devs = device.getDevices();
+    list<string> libs = device.getLibraries();
+    list<array<string,2>> files = device.getFiles();
+
+    list<string> files_arr;
+    files_arr.insert(files_arr.end(),devs.begin(),devs.end());
+    files_arr.insert(files_arr.end(),libs.begin(),libs.end());
+    for(list<array<string,2>>::iterator it = files.begin(); it != files.end(); it++){
+        files_arr.push_back(it->at(0));
+        if(it->at(1).empty()){
+            errx(1,"Destination for [%s] is not specified\n",it->at(0).c_str());
+            return false;
+        }
+    }
+
+    for(list<string>::iterator it = files_arr.begin(); it != files_arr.end(); it++){
+        if( ! isFileExisting(it->c_str()) ){
+            errx(1,"File [%s] not exists\n",it->c_str());
+            return false;
+        }
+    }
+
+    //PCI Slot check - TODO
+    string slot = device.getPciSlot();
+    uint16_t vendorID = device.getVendorID();
+    uint16_t deviceID = device.getDeviceID();
+    uint16_t subVendorID = device.getSubVendorID();
+    uint16_t subDeviceID = device.getSubDeviceID();
+
+    return true;
 }

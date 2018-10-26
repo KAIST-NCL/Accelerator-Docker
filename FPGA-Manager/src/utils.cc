@@ -328,3 +328,8 @@ static char *cgroupRoot(char *line, char *prefix, const char *subsys){
 
     return (root);
 }
+
+bool isFileExisting(const char* path){
+    struct stat s;
+    return (stat (path, &s) == 0); 
+}

@@ -16,7 +16,9 @@ bool Mounter::mountDevice(Device device){
     list<string> dev_files = device.getDevices();
     list<string> lib_files = device.getLibraries();
     list<array<string,2>> files = device.getFiles();
-    result = result && mountDeviceFiles(dev_files) && mountLibraries(lib_files) && mountFiles(files); //TODO : set ENV
+    list<array<string,2>> envs = device.getEnvs();
+
+    result = result && mountDeviceFiles(dev_files) && mountLibraries(lib_files) && mountFiles(files) && setEnvs(envs);
     return result;
 }
 
@@ -77,7 +79,7 @@ bool Mounter::mountLibraries(list<string> lib_files){
 bool Mounter::mountLibrary(string lib){
     string base = lib.substr(lib.find_last_of("/\\") + 1);
     string dst = "/usr/lib/"+base;
-    mountFile(lib,dst);
+    return mountFile(lib,dst);
 }
 
 bool Mounter::mountFiles(list<array<string,2>> files){
@@ -121,14 +123,24 @@ bool Mounter::mountFile(string src,string dst_rel){
     }else if(S_ISREG(mode.st_mode)){
         std::ofstream dest(dst_c, std::ios::binary);
         dest.close();
-        const char* src_c = src.c_str();
-        const char* dst_c = dst.c_str();
         mount(src_c,dst_c,NULL,MS_BIND,NULL);
         mount(NULL,dst_c,NULL,MS_BIND | MS_REMOUNT | MS_RDONLY | MS_NODEV | MS_NOSUID,NULL);
-        chmod(dst_c,mode.st_mode);
         return true;
     }else{
         return false;
     }
     return false;
+}
+
+bool Mounter::setEnvs(list<array<string,2>> envs){
+    string dst = join_rootfs_path(cont->getRootFs(),"/.tmp_env");
+    const char* dst_c = dst.c_str();
+
+    FILE *f;
+    f = fopen(dst_c,"w");
+    for(list<array<string,2>>::iterator it = envs.begin() ; it != envs.end() ; it++){
+        fprintf(f,"%s=%s\n",it->at(0).c_str(),it->at(1).c_str());
+    }
+    fclose(f);
+    return true;
 }

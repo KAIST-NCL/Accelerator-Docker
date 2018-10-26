@@ -49,4 +49,6 @@ mode_t getUmask(void);
 char * parseProcFile(const char *procf, parseFn parse, char *prefix, const char *subsys);
 char * findCgroupPath(pid_t pid);
 
+bool isFileExisting(const char*);
+
 #endif
