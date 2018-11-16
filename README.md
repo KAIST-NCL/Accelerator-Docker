@@ -19,7 +19,7 @@ $ sudo apt-get update && \
 ```
 Now, clone this repository and make it.
 ```bash
-$ git clone https://github.com/EunjuYang/FPGA-Docker.git
+$ git clone https://github.com/KAIST-NCL/FPGA-Docker.git
 $ cd FPGA-Docker
 $ make
 $ sudo make install
@@ -65,7 +65,7 @@ $ docker run --runtime fpga-runtime -e ACC_VISIBLE_DEVICES=Xilinx_1
 
 ## Authors
 #### KAIST NCL
-* Sunghyun Kim
-* Eunju Yang
+* [Sunghyun Kim](https://github.com/cqbqdd11519)
+* [Eunju Yang](https://github.com/EunjuYang)
 
 ## License

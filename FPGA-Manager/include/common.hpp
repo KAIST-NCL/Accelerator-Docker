@@ -47,7 +47,6 @@
 #define ERR_CODE_PROCESS_STILL_RUNNING 24
 
 using namespace std;
-//
 
 class Device;
 
@@ -111,8 +110,6 @@ class Device{
         void addLibrary(string);
         void addFile(string,string);
         void addEnv(string,string);
-
-        bool validate();
     private:
         string name;
         string type;

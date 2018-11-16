@@ -113,10 +113,6 @@ uint16_t Device::getSubVendorID(){
 uint16_t Device::getSubDeviceID(){
     return subDeviceID;
 }
-bool Device::validate(){
-    //TODO : validity check (existence of files / pci port ...)
-    return true;
-}
 
 Driver::Driver(string _name, int _vendorID, int _deviceID, int _subVendorID, int _subDeviceID)
  : name(_name), vendorID(_vendorID), deviceID(_deviceID), subVendorID(_subVendorID), subDeviceID(_subDeviceID){}

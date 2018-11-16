@@ -37,7 +37,7 @@ bool DeviceParser::parse(list<Device>* to){
     close(fd0);
     list<Device> devs_usr = protoToDevice(usr_list);
 
-    //Status file + User defined device file --> User defined에 있는 애만 status file에서 status 등 파싱
+    //Status file + User defined device file --> From status file, parse status and pid of only those who are defined in user defined list
     for(list<Device>::iterator it = devs_usr.begin() ; it != devs_usr.end() ; it++){
         bool _continue = true;
         for(list<Device>::iterator it_stat = devs_stat.begin() ; _continue && it_stat != devs_stat.end() ; it_stat++){
@@ -45,6 +45,11 @@ bool DeviceParser::parse(list<Device>* to){
                 _continue = false;
                 it->setStatus(it_stat->getStatus());
                 it->setPid(it_stat->getPid());
+                // If pid is unavailable(not running), it is considered as available
+                if(it->getStatus() == Device::Status::UNAVAILABLE && kill(it->getPid(),0) < 0){
+                    it->setStatus(Device::Status::AVAILABLE);
+                    it->setPid(0);
+                }
             }
         }
     }
@@ -55,7 +60,6 @@ bool DeviceParser::parse(list<Device>* to){
 
 list<Device> DeviceParser::protoToDevice(device::device_list* proto_dev){
     list<Device> devs;
-    // TODO : Update is required 
     // Devie class inherits device class defined by protocolbuffer
     for(int idx = 0; idx < proto_dev->devices_size(); idx ++){
         device::device t_dev = proto_dev->devices(idx);
@@ -86,8 +90,7 @@ list<Device> DeviceParser::protoToDevice(device::device_list* proto_dev){
             dev.addEnv(t_dev.env(i).key(),t_dev.env(i).val());
 
         // push back to device list
-        if(dev.validate())
-            devs.push_back(dev);
+        devs.push_back(dev);
     }
     return devs;
 }

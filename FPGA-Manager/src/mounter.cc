@@ -98,15 +98,9 @@ bool Mounter::mountFile(string src,string dst_rel){
     struct stat mode;
     mode_t perm;
     
-    /*
-        TODO : Move to parser
-        Binary Path + $PATH
-        Library Path + $INTELFPGAOCLSDKROOT
-    */
     if(src.empty() || dst.empty())
         return false;
     if(!src.empty() && src_c[0] != '/' ){
-        // TODO : realpath, /usr/lib, ...
         errx(ERR_CODE_ONLY_ABS_PATH_ALLOWED,"library [%s] should be in absolute path",src_c);
         return false;
         if(realpath(src_c,src_tmp) == NULL)
@@ -133,6 +127,7 @@ bool Mounter::mountFile(string src,string dst_rel){
 }
 
 bool Mounter::setEnvs(list<array<string,2>> envs){
+    //Temporal way for setting env var.s
     string dst = join_rootfs_path(cont->getRootFs(),"/.tmp_env");
     const char* dst_c = dst.c_str();
 

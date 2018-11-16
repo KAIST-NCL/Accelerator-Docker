@@ -3,8 +3,7 @@
 #include "manager.hpp"
 #include "mounter.hpp"
 
-bool configure_parse(int argc, char** argv, Context* ctx)
-{
+bool configure_parse(int argc, char** argv, Context* ctx){
     for (int i = 0; i < argc; i++) {
         cmatch cm;
         regex r_pid("--pid=([0-9]*)");
@@ -28,8 +27,7 @@ bool configure_parse(int argc, char** argv, Context* ctx)
     return ctx->validate() && ctx->parseOwner();
 }
 
-bool configure_command(Context* ctx)
-{
+bool configure_command(Context* ctx){
     Manager manager(ctx);
     if (!manager.requestDevices()){
         manager.releaseDevices();

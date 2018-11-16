@@ -8,6 +8,8 @@ Command command_list[COMMAND_CNT] = {
     { "list", &list_parse, &list_command }
 };
 
+//TODO : Error handling --> using exception
+//TODO : Set status file, device file path with given option '--config= , --stat='
 int main(int argc, char** argv)
 {
     int index, argc_n;
@@ -38,6 +40,6 @@ int main(int argc, char** argv)
             }
         }
     }
-    errx(ERR_CODE_FUNC_ERROR,"command execution error");
-    return ERR_CODE_COMMAND_ERROR;
+    list_command(&ctx);
+    return 0;
 }
