@@ -25,6 +25,10 @@ bool release_command(Context *);
 bool list_parse(int, char**, Context *);
 bool list_command(Context *);
 
+//print help instructions
+bool help_parse(int, char**, Context *);
+bool help_command(Context *);
+
 class Command {
     public:
         Command(string name, bool (*)(int, char**,Context*), bool (*)(Context*));

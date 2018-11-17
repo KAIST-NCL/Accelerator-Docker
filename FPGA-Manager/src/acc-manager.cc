@@ -1,11 +1,12 @@
 #include "cli.hpp"
 
-#define COMMAND_CNT 3
+#define COMMAND_CNT 4
 
 Command command_list[COMMAND_CNT] = {
     { "configure", &configure_parse, &configure_command },
     { "release", &release_parse, &release_command},
-    { "list", &list_parse, &list_command }
+    { "list", &list_parse, &list_command },
+    { "help", &help_parse, &help_command}
 };
 
 //TODO : Error handling --> using exception
@@ -29,17 +30,22 @@ int main(int argc, char** argv)
                 argc_n = argc - index;
 
                 if (!command_list[i].parse_fn(argc_n, argv_n, &ctx)) {
-                    errx(ERR_CODE_PARSE_ERROR,"[%s] command parsing error",it[0]);
-                    return ERR_CODE_PARSE_ERROR;
+                  // print out help
+                  help_command(NULL);
+                  return ERR_CODE_PARSE_ERROR;
+                    //errx(ERR_CODE_PARSE_ERROR,"[%s] command parsing error",it[0]);
+                    //return ERR_CODE_PARSE_ERROR;
                 }
                 if (!command_list[i].func(&ctx)) {
-                    errx(ERR_CODE_FUNC_ERROR,"[%s] command execution error",it[0]);
-                    return ERR_CODE_FUNC_ERROR;
+                  help_command(NULL);
+                  return ERR_CODE_FUNC_ERROR;
+                    //errx(ERR_CODE_FUNC_ERROR,"[%s] command execution error",it[0]);
+                    //return ERR_CODE_FUNC_ERROR;
                 }
                 return EXIT_CODE_SUCCESS;
             }
         }
     }
-    list_command(&ctx);
+    help_command(&ctx);
     return 0;
 }
