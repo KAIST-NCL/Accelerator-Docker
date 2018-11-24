@@ -4,9 +4,9 @@ FPGA-Docker supports running container with accessibility to a target FPGA.
 It manages status of all FPGAs in a server.
 FPGA-Docker (a.k.a. Accelerator-Docker) supports automatic pass-through of PCIe-connected accelerators (FPGA or GPU) in container. Original docker requires setting for mounting device driver, libraries to access specific hardware in the container. In the FPGA-Docker, however, it automatically runs a container following the pre-determined settings with simple option.
 
-<p align="center"><img src="http://ncl.kaist.ac.kr/wp-content/uploads/2018/11/FPGA-Docker.png" alt="drawing" width="600" height="396"/>
+<p align="center">
+ <img src="images/FPGA-Docker.png" alt="drawing" width="600" height="396"/>
 </p>
-
 
 ## Getting Started
 #### Dependencies
