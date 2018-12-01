@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <fcntl.h>
 #include <libgen.h>
+#include <limits.h>
 
 #include <pwd.h>
 #include <grp.h>
@@ -52,3 +53,4 @@ char * findCgroupPath(pid_t pid);
 bool isFileExisting(const char*);
 
 #endif
+

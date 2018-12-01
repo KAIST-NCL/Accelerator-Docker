@@ -1,5 +1,4 @@
 #include "utils.hpp"
-#include <limits.h>
 
 void str_lower(char* str)
 {
@@ -333,3 +332,4 @@ bool isFileExisting(const char* path){
     struct stat s;
     return (stat (path, &s) == 0); 
 }
+

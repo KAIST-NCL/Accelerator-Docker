@@ -112,8 +112,52 @@ bool Mounter::mountFile(string src,string dst_rel){
     perm = (0777 & ~getUmask()) | S_IWUSR | S_IXUSR;
     makeAncestors(dirname(dir_tmp), perm);
 
-    if(S_ISDIR(mode.st_mode) || S_ISLNK(mode.st_mode)){
+    if(S_ISDIR(mode.st_mode)){
         return false;
+    }else if(S_ISLNK(mode.st_mode)){
+        char lnk_buf[1024];
+        int len;
+        if( (len = readlink(src_c,lnk_buf_tmp,sizeof(lnk_buf_tmp)-1)) < 0){
+            return false;
+        }
+        lnk_buf[len] = '\0';
+        string lnk_src;
+        string lnk_dst;
+        if(lnk_buf[0] == '/'){
+            lnk_dst = join_rootfs_path(cont->getRootFs(),string(lnk_buf));
+            lnk_src = string(lnk_buf);
+        }else{
+            //Tokenize dst_c and append lnk_buf
+            const char delimeter[2] = "/";
+            char* token;
+            char* tmp_tok;
+
+            string tmp_s = dst_rel.c_str();
+            char* dst_tmp = (char*)tmp_s.c_str();
+            lnk_dst = string("");
+            token = strtok(dst_tmp,delimeter);
+            while(token != NULL){
+                tmp_tok = strtok(NULL,delimeter);
+                if(tmp_tok != NULL)
+                    lnk_dst = lnk_dst + string("/") + string(token);
+                token = tmp_tok;
+            }
+            lnk_dst = lnk_dst + string("/") + string(lnk_buf);
+
+            tmp_s = src.c_str();
+            char* src_tmp = (char*)tmp_s.c_str();
+            lnk_src = string("");
+            token = strtok(src_tmp,delimeter);
+            while(token != NULL){
+                tmp_tok = strtok(NULL,delimeter);
+                if(tmp_tok != NULL)
+                    lnk_src = lnk_src + string("/") + string(token);
+                token = tmp_tok;
+            }
+            lnk_src = lnk_src + string("/") + string(lnk_buf);
+        }
+        symlink(lnk_buf,dst_c);
+        return mountFile(lnk_src,lnk_dst);
     }else if(S_ISREG(mode.st_mode)){
         std::ofstream dest(dst_c, std::ios::binary);
         dest.close();
@@ -139,3 +183,4 @@ bool Mounter::setEnvs(list<array<string,2>> envs){
     fclose(f);
     return true;
 }
+
