@@ -46,10 +46,15 @@ bool DeviceParser::parse(list<Device>* to){
                 it->setStatus(it_stat->getStatus());
                 it->setPid(it_stat->getPid());
                 // If pid is unavailable(not running), it is considered as available
-                if(it->getStatus() == Device::Status::UNAVAILABLE && kill(it->getPid(),0) < 0){
+                struct stat s;
+                string proc_str = "/proc/"+to_string(it->getPid());
+                const char* proc_str_c = proc_str.c_str();
+                stat(proc_str_c, &s);
+                if(it->getStatus() == Device::Status::UNAVAILABLE && !S_ISDIR(s.st_mode)){
                     it->setStatus(Device::Status::AVAILABLE);
                     it->setPid(0);
                 }
+
             }
         }
     }
