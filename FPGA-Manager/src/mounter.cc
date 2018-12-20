@@ -117,7 +117,7 @@ bool Mounter::mountFile(string src,string dst_rel){
     }else if(S_ISLNK(mode.st_mode)){
         char lnk_buf[1024];
         int len;
-        if( (len = readlink(src_c,lnk_buf_tmp,sizeof(lnk_buf_tmp)-1)) < 0){
+        if( (len = readlink(src_c,lnk_buf,sizeof(lnk_buf)-1)) < 0){
             return false;
         }
         lnk_buf[len] = '\0';
