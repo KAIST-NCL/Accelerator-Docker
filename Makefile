@@ -8,6 +8,8 @@ MANAGER_BIN := fpga-manager
 
 all: $(RUNTIME_BIN) $(HOOK_BIN) $(MANAGER_BIN)
 
+all-cont-ubuntu16.04: $(RUNTIME_BIN)-cont-ubuntu16.04 $(HOOK_BIN)-cont-ubuntu16.04 $(MANAGER_BIN)-cont-ubuntu16.04
+
 pre:
 	@if [ ! -d "./$(OUT_DIR)" ]; then mkdir $(OUT_DIR); fi
 
@@ -22,6 +24,19 @@ $(HOOK_BIN): pre
 $(MANAGER_BIN): pre
 	make -C $(CURDIR)/FPGA-Manager
 	cp $(CURDIR)/FPGA-Manager/$(OUT_DIR)/$@ $(OUT_DIR)/$@
+
+$(RUNTIME_BIN)-cont-ubuntu16.04: pre
+	make -C $(CURDIR)/FPGA-Runtime cont-ubuntu16.04
+	cp $(CURDIR)/FPGA-Runtime/$(OUT_DIR)/$(RUNTIME_BIN) $(OUT_DIR)/$(RUNTIME_BIN)
+
+$(HOOK_BIN)-cont-ubuntu16.04: pre
+	make -C $(CURDIR)/FPGA-Runtime-Hook cont-ubuntu16.04
+	cp $(CURDIR)/FPGA-Runtime-Hook/$(OUT_DIR)/$(HOOK_BIN) $(OUT_DIR)/$(HOOK_BIN)
+
+$(MANAGER_BIN)-cont-ubuntu16.04: pre
+	make -C $(CURDIR)/FPGA-Manager cont-ubuntu16.04
+	cp $(CURDIR)/FPGA-Manager/$(OUT_DIR)/$(MANAGER_BIN) $(OUT_DIR)/$(MANAGER_BIN)
+	cp $(CURDIR)/FPGA-Manager/$(OUT_DIR)/libprotobuf* $(OUT_DIR)/
 
 install:
 	\cp $(CURDIR)/$(OUT_DIR)/$(RUNTIME_BIN) /usr/bin/$(RUNTIME_BIN)
