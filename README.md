@@ -1,8 +1,8 @@
-# FPGA-Docker
+# Accelerator-Docker
 
-FPGA-Docker supports running container with accessibility to a target FPGA.  
-It manages status of all FPGAs in a server.
-FPGA-Docker (a.k.a. Accelerator-Docker) supports automatic pass-through of PCIe-connected accelerators (FPGA or GPU) in container. Original docker requires setting for mounting device driver, libraries to access specific hardware in the container. In the FPGA-Docker, however, it automatically runs a container following the pre-determined settings with simple option.
+Accelerator-Docker supports running container with accessibility to a target hardware accelerator (e.g., fpga or gpu).  
+It can manage status of all accelerators in a server.
+Accelerator-Docker supports automatic pass-through of PCIe-connected accelerators (FPGA or GPU) in container. Original docker requires setting for mounting device driver, libraries to access specific hardware in the container. In the Accelerator-Docker, however, it automatically runs a container following the pre-determined settings with simple option. Moreover, it provides common interface to manage heterogeneous accelerators. More details are described below.
 
 <p align="center">
  <img src="images/FPGA-Docker.png" alt="drawing" width="600" height="396"/>
@@ -36,9 +36,9 @@ $ sudo make install
 - Go 1.11
 - Protocol Buffers 3.6.1
 
-## How to run FPGA-Docker
+## How to run Accelerator-Docker
 First, you need to provide device list you want to access from docker container as protocol buffer text form.  
-**/etc/fpga-docker/device.pbtxt**
+**/etc/accelerator-docker/device.pbtxt**
 ```
 devices :[{
     name: "Xilinx_1",
@@ -68,8 +68,8 @@ $ docker run --runtime fpga-runtime -e ACC_VISIBLE_DEVICES=Xilinx_1
 ```
 
 ## Using FPGA-Manager
-FPGA-Docker not only provides runtime hook for docker but also provides manager registered in device file.
-FPGA-Manager provides status for all devices and which container uses the hardware.
+Accelerator-Docker not only provides runtime hook for docker but also provides manager registered in device file.
+Accelerator-Manager provides status for all devices and which container uses the hardware.
 
 ```
 $ fpga-manager list
