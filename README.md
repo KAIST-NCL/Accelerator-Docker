@@ -5,7 +5,7 @@ It can manage status of all accelerators in a server.
 Accelerator-Docker supports automatic pass-through of PCIe-connected accelerators (FPGA or GPU) in container. Original docker requires setting for mounting device driver, libraries to access specific hardware in the container. In the Accelerator-Docker, however, it automatically runs a container following the pre-determined settings with simple option. Moreover, it provides common interface to manage heterogeneous accelerators. More details are described below.
 
 <p align="center">
- <img src="images/FPGA-Docker.png" alt="drawing" width="600" height="396"/>
+ <img src="images/Accelerator-Docker.png" alt="drawing" width="600" height="396"/>
 </p>
 
 ## Getting Started
@@ -24,8 +24,8 @@ $ sudo apt-get update && \
 ```
 Now, clone this repository and make it.
 ```bash
-$ git clone https://github.com/KAIST-NCL/FPGA-Docker.git
-$ cd FPGA-Docker
+$ git clone https://github.com/KAIST-NCL/Accelerator-Docker.git
+$ cd Accelerator-Docker
 $ make
 $ sudo make install
 ```
@@ -64,15 +64,15 @@ devices :[{
 (Files specified in 'library' section are mounted to '/usr/lib' of container, while the files specified in 'file' section are mounted to specific path.)
 
 ```
-$ docker run --runtime fpga-runtime -e ACC_VISIBLE_DEVICES=Xilinx_1
+$ docker run --runtime acc-runtime -e ACC_VISIBLE_DEVICES=Xilinx_1
 ```
 
-## Using FPGA-Manager
+## Using ACC-Manager
 Accelerator-Docker not only provides runtime hook for docker but also provides manager registered in device file.
 Accelerator-Manager provides status for all devices and which container uses the hardware.
 
 ```
-$ fpga-manager list
+$ acc-manager list
 ```
 
 

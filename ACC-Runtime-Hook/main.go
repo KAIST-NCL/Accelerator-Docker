@@ -20,7 +20,7 @@ func getManagerPath() string {
 	if err := os.Setenv("PATH", strings.Join(dirs, ":")); err != nil {
 		log.Panicln("PATH set error : ", err)
 	}
-	path, err := exec.LookPath("fpga-manager")
+	path, err := exec.LookPath("acc-manager")
 	if err != nil {
 		log.Panicln("finding binary acc-manager in", os.Getenv("PATH"), " error : ", err)
 	}

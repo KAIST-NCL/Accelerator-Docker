@@ -1,7 +1,8 @@
 {
+    "default-runtime": "acc-runtime",
     "runtimes": {
-        "fpga-runtime": {
-            "path": "/usr/bin/fpga-runtime",
+        "acc-runtime": {
+            "path": "/usr/bin/acc-runtime",
             "runtimeArgs": []
         }
     }

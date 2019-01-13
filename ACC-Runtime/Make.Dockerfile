@@ -6,17 +6,17 @@ ARG GID=1000
 RUN groupadd -g $GID -o $UNAME && \
     useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
 
-RUN mkdir /FPGA-Runtime-Hook && \
+RUN mkdir /ACC-Runtime && \
     apt-get update && \
-    apt-get install -y build-essential wget && \
+    apt-get install -y build-essential wget git pkg-config libseccomp-dev libapparmor-dev libselinux1-dev && \
     wget -qO- https://dl.google.com/go/go1.11.4.linux-amd64.tar.gz | tar xvz -C /usr/local
 
 ENV PATH $PATH:/usr/local/go/bin
 
-COPY . /FPGA-Runtime-Hook
-RUN chown -R $UNAME:$UNAME /FPGA-Runtime-Hook
+COPY . /ACC-Runtime
+RUN chown -R $UNAME:$UNAME /ACC-Runtime
 
 USER $UNAME
 
-RUN cd /FPGA-Runtime-Hook && \
+RUN cd /ACC-Runtime && \
     make

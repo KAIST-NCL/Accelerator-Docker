@@ -1,11 +1,11 @@
-# FPGA-Manager
+# ACC-Manager
 
-FPGA-Manager provides information of all registered FPGAs.
-fpga manager list shows all accelerators and their status.
-If a fpga is used by a container, it print the container information using the hardware as "holder".
+ACC-Manager provides information of all registered accelerators.
+acc manager list shows all accelerators and their status.
+If an accelerator is used by a container, it print the container information using the hardware as "holder".
 
 ```
-$ fpga-manager list
+$ acc-manager list
 ```
 
 

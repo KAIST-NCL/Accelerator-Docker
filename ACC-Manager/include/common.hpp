@@ -38,8 +38,8 @@
     # error "unsupported architecture"
 #endif
 
-#define USR_DEF_DEV     "/etc/fpga-docker/device.pbtxt"
-#define STATUS_CFG      "/etc/fpga-docker/stat.pb"
+#define USR_DEF_DEV     "/etc/accelerator-docker/device.pbtxt"
+#define STATUS_CFG      "/etc/accelerator-docker/stat.pb"
 
 #define ERR_CODE_NO_ROOTFS 21
 #define ERR_CODE_NO_PROC_DIR 22

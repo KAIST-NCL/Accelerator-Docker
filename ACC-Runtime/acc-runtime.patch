@@ -7,7 +7,7 @@ index cbe4bf2..8a56858 100644
  
  runc: $(SOURCES)
 -	$(GO) build -buildmode=pie $(EXTRA_FLAGS) -ldflags "-X main.gitCommit=${COMMIT} -X main.version=${VERSION} $(EXTRA_LDFLAGS)" -tags "$(BUILDTAGS)" -o runc .
-+	$(GO) build -buildmode=pie $(EXTRA_FLAGS) -ldflags "-X main.gitCommit=${COMMIT} -X main.version=${VERSION} $(EXTRA_LDFLAGS)" -tags "$(BUILDTAGS)" -o fpga-runtime .
++	$(GO) build -buildmode=pie $(EXTRA_FLAGS) -ldflags "-X main.gitCommit=${COMMIT} -X main.version=${VERSION} $(EXTRA_LDFLAGS)" -tags "$(BUILDTAGS)" -o acc-runtime .
  
  all: runc recvtty
  
@@ -19,7 +19,7 @@ index 421abf6..5a4f42a 100644
  		return err
  	}
  
-+        //FPGA-Docker : Temporal way for setting environmental variables!
++        //Accelerator-Docker : Temporal way for setting environmental variables!
 +        tmp_path := path.Join(config.Rootfs,".tmp_env")
 +        if _, err := os.Stat(tmp_path); !os.IsNotExist(err) {
 +                buf, _ := ioutil.ReadFile(tmp_path)
@@ -54,7 +54,7 @@ index 5165336..a36e6b3 100644
  }
  
 +func addACCHook(context *cli.Context, spec *specs.Spec) error {
-+	path, err := exec.LookPath("fpga-runtime-hook")
++	path, err := exec.LookPath("acc-runtime-hook")
 +	if err != nil {
 +		return err
 +	}

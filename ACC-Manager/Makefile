@@ -6,7 +6,7 @@ OUT_DIR := out
 BUILD_DIR := build
 TEST_DIR := test
 T_PARSER := t_parser
-TARGET := fpga-manager
+TARGET := acc-manager
 PROTO_NAME := device
 SRCS := $(wildcard src/*)
 SRCS := $(notdir $(filter-out src/$(TARGET).cc, $(SRCS)))
@@ -25,8 +25,8 @@ $(TARGET):
 
 cont-ubuntu16.04:
 	@if [ ! -d "$(OUT_DIR)" ]; then mkdir $(OUT_DIR); fi
-	docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) -t "fpga/manager/ubuntu:16.04" -f Make.Dockerfile .
-	docker run --rm -v $(CURDIR)/$(OUT_DIR):/dist:Z -u $(shell id -u):$(shell id -g) "fpga/manager/ubuntu:16.04" /bin/bash -c "cp /FPGA-Manager/out/$(TARGET) /dist && cp /usr/local/lib/libprotobuf.so.17 /dist"
+	docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) -t "acc/manager/ubuntu:16.04" -f Make.Dockerfile .
+	docker run --rm -v $(CURDIR)/$(OUT_DIR):/dist:Z -u $(shell id -u):$(shell id -g) "acc/manager/ubuntu:16.04" /bin/bash -c "cp /ACC-Manager/out/$(TARGET) /dist && cp /usr/local/lib/libprotobuf.so.17 /dist"
 
 $(T_PARSER): $(clean) $(OBJS)
 	g++ $(TEST_DIR)/tb_device-detector.cc $(addprefix $(BUILD_DIR)/, $^)  $(FLAGS) -o $(OUT_DIR)/$@ -std=c++11
@@ -44,4 +44,4 @@ clean:
 	if [ -f "$(OUT_DIR)/libprotobuf.so.17" ]; then rm $(OUT_DIR)/libprotobuf.so.17; fi
 	if [ -f "$(INC_DIR)/$(PROTO_NAME).pb.h" ]; then rm $(INC_DIR)/$(PROTO_NAME).pb.h; fi
 	if [ -f "$(SRC_DIR)/$(PROTO_NAME).pb.cc" ]; then rm $(SRC_DIR)/$(PROTO_NAME).pb.cc; fi
-	if [ "$(shell docker images -q fpga/manager/ubuntu:16.04 2> /dev/null)" != "" ]; then docker rmi "fpga/manager/ubuntu:16.04"; fi
+	if [ "$(shell docker images -q acc/manager/ubuntu:16.04 2> /dev/null)" != "" ]; then docker rmi "acc/manager/ubuntu:16.04"; fi
