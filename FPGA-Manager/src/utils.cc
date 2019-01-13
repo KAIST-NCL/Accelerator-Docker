@@ -1,5 +1,12 @@
 #include "utils.hpp"
 
+bool caseInSensStringCompare(std::string str1, std::string str2)
+{
+	return ((str1.size() == str2.size()) && std::equal(str1.begin(), str1.end(), str2.begin(), [](char & c1, char & c2){
+							return (c1 == c2 || std::toupper(c1) == std::toupper(c2));
+								}));
+}
+
 void str_lower(char* str)
 {
     for (char* p = str; *p != '\0'; ++p)

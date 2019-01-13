@@ -13,7 +13,7 @@ bool Manager::requestDevices(){
     for(list<string>::iterator it_st = req_devs.begin() ; it_st != req_devs.end() ; ++it_st){
         bool result_it = false;
         for(list<Device>::iterator it_dev = dev_list.begin() ; !result_it && it_dev != dev_list.end() ; ++ it_dev){
-            if(it_st->compare(it_dev->getName()) == 0 || it_st->compare(string("all")) == 0){
+            if(caseInSensStringCompare(*it_st,it_dev->getName()) || caseInSensStringCompare(*it_st,string("all"))){
                 if(it_dev->getStatus() == Device::Status::UNAVAILABLE){
                     errx(ERR_CODE_DEVICE_LOCKED,"[%s] device locked by other process",it_st->c_str());
                     return false;

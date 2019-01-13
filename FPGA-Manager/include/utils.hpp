@@ -19,11 +19,13 @@
 
 #include <fstream>
 #include <sstream>
+#include <cctype>
 
 #define nitems(x) (sizeof(x) / sizeof(*x))
 
 typedef char *(*parseFn)(char *, char *, const char *);
 
+bool caseInSensStringCompare(std::string str1, std::string str2);
 void str_lower(char *);
 bool str_equal(const char *, const char *);
 bool str_case_equal(const char *, const char *);
