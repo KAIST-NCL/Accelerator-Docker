@@ -28,6 +28,8 @@ $ git clone https://github.com/KAIST-NCL/Accelerator-Docker.git
 $ cd Accelerator-Docker
 $ make
 $ sudo make install
+
+$ sudo systemctl restart docker #Restart docker daemon to notify that new runtime is added
 ```
 
 #### Tested Environment
