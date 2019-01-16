@@ -9,14 +9,14 @@ Accelerator-Docker supports automatic pass-through of PCIe-connected accelerator
 </p>
 
 ## Getting Started
-#### Dependencies
+### Dependencies
 - Docker
 - Go >= 1.6
 - Protocol Buffers (C++) & Protoc
 
 For dependencies, refer to [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/#set-up-the-repository), [Go](https://golang.org/dl/), [Protocol Buffers](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md) 
 
-#### Installing
+### Installation
 Install dependencies for build
 ```bash
 $ sudo apt-get update && \
@@ -32,7 +32,7 @@ $ sudo make install
 $ sudo systemctl restart docker #Restart docker daemon to notify that new runtime is added
 ```
 
-#### Tested Environment
+### Tested Environment
 - Ubuntu 16.04
 - Docker 18.06.1-ce
 - Go 1.11
