@@ -13,19 +13,29 @@ message file_entry {
 message device {
     required string name = 1;
     optional string pci = 2;
-    repeated string device_driver = 3;
+    repeated string device_file = 3;
     repeated string library = 4;
     repeated file_entry file = 5;
     repeated env_entry env = 6;
-    optional string type = 7;
-    optional Status status = 8;
-    optional int32 pid = 9;
+    optional Status status = 7;
+    optional int32 pid = 8;
+    optional string id = 9;
     enum Status {
         IDLE = 0;
         USED = 1;
+        MISS = 2;
     }
+}
+
+message accelerator {
+    required string type = 1;
+    optional device_list devices = 2;
 }
 
 message device_list {
     repeated device devices = 1;
+}
+
+message accelerator_list {
+    repeated accelerator accelerators = 1;
 }

@@ -13,7 +13,7 @@ bool Mounter::mountDevices(list<Device> devices){
 
 bool Mounter::mountDevice(Device device){
     bool result = true;
-    list<string> dev_files = device.getDevices();
+    list<string> dev_files = device.getDeviceFiles();
     list<string> lib_files = device.getLibraries();
     list<array<string,2>> files = device.getFiles();
     list<array<string,2>> envs = device.getEnvs();

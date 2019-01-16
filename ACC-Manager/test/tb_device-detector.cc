@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-    DeviceParser p_dev(argv[1]);
+    /*DeviceParser p_dev(argv[1]);
     list<Device> devs;
     devs = p_dev.parse();
 
@@ -14,6 +14,6 @@ int main(int argc, char *argv[]){
     for(iter = devs.begin(); iter!= devs.end(); iter++){
                 cout << iter-> getName() << endl;
                 cout << iter-> getPciSlot() << endl;
-    }
+    }*/
 
 }

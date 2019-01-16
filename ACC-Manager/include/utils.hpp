@@ -54,5 +54,6 @@ char * findCgroupPath(pid_t pid);
 
 bool isFileExisting(const char*);
 
+string generateDeviceId(Device);
 #endif
 

@@ -12,14 +12,16 @@ bool configure_parse(int argc, char** argv, Context* ctx){
         if (regex_match(argv[i], cm, r_pid) && cm.size() > 1) {
             ctx->setPid( atoi(cm[1].str().c_str()) );
         } else if (regex_match(argv[i], cm, r_dev) && cm.size() > 1) {
-            char* tmp;
-            char* target = (char*)cm[1].str().c_str();
-            tmp = strtok(target, ",");
-            while (tmp != NULL) {
-                string dev(tmp);
-                ctx->addReqDevice(dev);
-                tmp = strtok(NULL, ",");
+            string arg = cm[1].str();
+            string delimiter = ",";
+            size_t pos = 0;
+            string token;
+            while((pos = arg.find(delimiter)) != string::npos){
+                token = arg.substr(0,pos);
+                ctx->addReqDevice(token);
+                arg.erase(0,pos+delimiter.length());
             }
+            ctx->addReqDevice(arg);
         } else if (i == argc - 1 && !regex_match(argv[i], r_rfs)) {
             ctx->setRootFs(string(argv[i]));
         }

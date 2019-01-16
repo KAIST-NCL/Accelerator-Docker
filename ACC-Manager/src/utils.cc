@@ -1,10 +1,9 @@
 #include "utils.hpp"
 
-bool caseInSensStringCompare(std::string str1, std::string str2)
-{
+bool caseInSensStringCompare(std::string str1, std::string str2){
 	return ((str1.size() == str2.size()) && std::equal(str1.begin(), str1.end(), str2.begin(), [](char & c1, char & c2){
-							return (c1 == c2 || std::toupper(c1) == std::toupper(c2));
-								}));
+        return (c1 == c2 || std::toupper(c1) == std::toupper(c2));
+    }));
 }
 
 void str_lower(char* str)
@@ -340,3 +339,23 @@ bool isFileExisting(const char* path){
     return (stat (path, &s) == 0); 
 }
 
+unsigned hash_str(const char* s)
+{
+   unsigned h = 37;
+   while (*s) {
+     h = (h * 54059) ^ (s[0] * 76963);
+     s++;
+   }
+   return h % 86969;
+}
+//Generate device id by hashing device/library file list --> if device/library file list changes, id changes
+string generateDeviceId(Device dev){
+    unsigned hash = 0;
+    for(string path: dev.getDeviceFiles()){
+        hash += hash_str(path.c_str());
+    }
+    for(string path: dev.getLibraries()){
+        hash += hash_str(path.c_str());
+    }
+    return to_string(hash);
+}

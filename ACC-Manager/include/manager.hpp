@@ -7,6 +7,7 @@
 
 #define ERR_CODE_DEVICE_LOCKED 10
 #define ERR_CODE_DEVICE_NOT_FOUND 11
+#define ERR_CODE_DEVICE_MISCONFIGURED 14
 #define ERR_CODE_PARSE_DETECT_DEVICES_FAILED 12
 #define ERR_CODE_RELEASE_DEVICE_FAILED 13
 
@@ -17,14 +18,14 @@ class Manager{
         bool requestDevice(list<Device>::iterator);
         bool releaseDevices();
 
-        list<Device> getDeviceList();
+        list<Accelerator> getAcceleratorList();
     private:
         Context *ctx;
         string status_file;
-        list<Device> dev_list;
+        list<Accelerator> acc_list;
 
         bool updateStatusFile();
-        bool parseAndDetectDevices();
+        bool parseAndDetectAccelerators();
 };
 
 #endif

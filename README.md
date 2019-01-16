@@ -41,29 +41,32 @@ $ sudo systemctl restart docker #Restart docker daemon to notify that new runtim
 ## How to run Accelerator-Docker
 First, you need to provide device list you want to access from docker container as protocol buffer text form.  
 **/etc/accelerator-docker/device.pbtxt**
-```
-devices :[{
-    name: "Xilinx_1",
-    type:"FPGA",
-    pci: "0000:01:00.0",
-    device_driver:[
-        "/dev/xcldev1",
-        "/dev/xdmadev1"
-    ],
-    library:[
-        "/PATH/TO/LIB/libxilinxopencl.so"
-    ],
-    file:[{
-        src: "/PATH/IN/HOST/libxclgemdrv.so",
-        dst: "/PATH/IN/CONTAINER/libxclgemdrv.so",
-    }],
-    env:[{
-        key: "XILINX_SDX",
-        val: "/SDX"
-    }]
+```protobuf
+accelerators:[{
+    type: "xilinx.fpga/kcu1500",
+    devices:{
+        devices:[{
+            name: KCU-1500,
+            device_file:[
+                "/dev/xcldev1",
+                "/dev/xdmadev1"
+            ],
+            library:[
+                "/PATH/TO/LIB/libxilinxopencl.so"
+            ],
+            file:[{
+                src: "/PATH/IN/HOST/libxclgemdrv.so",
+                dst: "/PATH/IN/CONTAINER/libxclgemdrv.so",
+            }],
+            env:[{
+                key: "XILINX_SDX",
+                val: "/SDX"
+            }]
+        }]
+    }
 }]
 ```
-(Files specified in 'library' section are mounted to '/usr/lib' of container, while the files specified in 'file' section are mounted to specific path.)
+- Files specified in 'library' section are mounted to '/usr/lib' of container, while the files specified in 'file' section are mounted to specific path.
 
 ```
 $ docker run --runtime acc-runtime -e ACC_VISIBLE_DEVICES=Xilinx_1

@@ -54,15 +54,27 @@ void Context::setDeviceFilePath(char* path){device_file_path=path;}
 void Context::setStatusFilePath(char* path){status_file_path=path;}
 void Context::addReqDevice(string dev){req_devices_name.push_back(dev);}
 
-Device::Device(string _name) : name(_name){
+Accelerator::Accelerator(string _type): type(_type){
+
+}
+string Accelerator::getType(){ return type; }
+list<Device> Accelerator::getDevices(){ return devices; }
+void Accelerator::setDevices(list<Device> _devs){
+    devices = _devs;
+}
+void Accelerator::addDevice(Device _device){
+    devices.push_back(_device);
+}
+
+Device::Device(string _name): name(_name){
     status = Status::AVAILABLE;
     pid = 0;
 }
-list<string> Device::getDevices(){ return devs; }
+list<string> Device::getDeviceFiles(){ return devs; }
 list<string> Device::getLibraries(){ return libs; }
 list<array<string,2>> Device::getFiles(){ return files; }
 list<array<string,2>> Device::getEnvs(){ return envs; }
-void Device::addDevice(string path){
+void Device::addDeviceFile(string path){
     devs.push_back(path);
 }
 void Device::addLibrary(string lib){
@@ -74,20 +86,23 @@ void Device::addFile(string src, string dst){
 void Device::addEnv(string key, string val){
     envs.push_back({key, val});
 }
-string Device::getName(){
-    return name;
-}
-string Device::getType(){
-    return type;
-}
-void Device::setType(string _type){
-    type = _type;
-}
 Device::Status Device::getStatus(){
     return status;
 }
 void Device::setStatus(Device::Status stat){
     status = stat;
+}
+string Device::getName(){
+    return name;
+}
+void Device::setName(string _name){
+    name = _name;
+}
+string Device::getId(){
+    return id;
+}
+void Device::setId(string _id){
+    id = _id;
 }
 pid_t Device::getPid(){
     return pid;

@@ -5,6 +5,9 @@
 #include <cstring>
 #include <string>
 #include <list>
+#include <map>
+#include <functional>
+#include <unordered_map>
 #include <array>
 #include <iostream>
 #include <cinttypes>
@@ -81,39 +84,54 @@ class Context {
         list<string> req_devices_name;
 };
 
+class Accelerator{
+    public:
+        Accelerator(string);
+        string getType();
+        list<Device> getDevices();
+        void setDevices(list<Device>);
+        void addDevice(Device);
+    private:
+        string type;
+        list<Device> devices;
+};
+
 class Device{
     public:
         enum Status{
             AVAILABLE,
-            UNAVAILABLE
+            UNAVAILABLE,
+            MISCONFIGURED
         };
-        Device(string _name);
+        Device(string);
 
-        list<string> getDevices();
+        list<string> getDeviceFiles();
         list<string> getLibraries();
         list<array<string,2>> getFiles();
         list<array<string,2>> getEnvs();
-        string getName();
-        string getType();
         Device::Status getStatus();
+        string getName();
+        string getId();
         pid_t getPid();
         string getPciSlot();
         uint16_t getVendorID();
         uint16_t getDeviceID();
         uint16_t getSubVendorID();
         uint16_t getSubDeviceID();
+        void setName(string);
+        void setId(string);
         void setType(string);
         void setStatus(Device::Status);
         void setPid(pid_t);
         void setPciSlot(string);
-        void addDevice(string);
+        void addDeviceFile(string);
         void addLibrary(string);
         void addFile(string,string);
         void addEnv(string,string);
     private:
-        string name;
-        string type;
         Device::Status status;
+        string name;
+        string id;
         pid_t pid;
         list<string> devs;
         list<string> libs;
