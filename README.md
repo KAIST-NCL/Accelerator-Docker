@@ -69,7 +69,7 @@ accelerators:[{
 - Files specified in 'library' section are mounted to '/usr/lib' of container, while the files specified in 'file' section are mounted to specific path.
 
 ```
-$ docker run --runtime acc-runtime -e ACC_VISIBLE_DEVICES=Xilinx_1
+$ docker run --runtime acc-runtime -e ACC_VISIBLE_DEVICES=KCU-1500
 ```
 
 ## Using ACC-Manager

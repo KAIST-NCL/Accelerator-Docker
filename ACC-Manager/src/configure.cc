@@ -18,10 +18,12 @@ bool configure_parse(int argc, char** argv, Context* ctx){
             string token;
             while((pos = arg.find(delimiter)) != string::npos){
                 token = arg.substr(0,pos);
-                ctx->addReqDevice(token);
+                if(token.compare("") != 0)
+                    ctx->addReqDevice(token);
                 arg.erase(0,pos+delimiter.length());
             }
-            ctx->addReqDevice(arg);
+            if(arg.compare("") != 0)
+                ctx->addReqDevice(arg);
         } else if (i == argc - 1 && !regex_match(argv[i], r_rfs)) {
             ctx->setRootFs(string(argv[i]));
         }
