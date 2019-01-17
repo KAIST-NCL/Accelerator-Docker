@@ -16,41 +16,32 @@
 #include <grp.h>
 
 #include "common.hpp"
+#include <regex>
+#include <vector>
+#include <algorithm>
 
 #include <fstream>
 #include <sstream>
 #include <cctype>
 
-#define nitems(x) (sizeof(x) / sizeof(*x))
+typedef string (*parseFn)(string, string &, string);
 
-typedef char *(*parseFn)(char *, char *, const char *);
+bool caseInSensStringCompare(string , string);
 
-bool caseInSensStringCompare(std::string str1, std::string str2);
-void str_lower(char *);
-bool str_equal(const char *, const char *);
-bool str_case_equal(const char *, const char *);
-bool str_has_prefix(const char *, const char *);
-bool str_has_suffix(const char *, const char *);
-bool str_empty(const char *);
-bool str_array_match(const char *, const char * const [], size_t);
-int  str_to_pid(const char *str, pid_t *pid);
-int  str_to_ugid(char *, uid_t *, gid_t *);
-int  str_join(char **, const char *, const char *);
+string joinRootfsPath(const string &, const string &);
 
-string join_rootfs_path(string, string);
+string cgroupMount(string, string &, string);
+string cgroupRoot(string, string &, string);
 
-static char * cgroupMount(char *line, char *prefix, const char *subsys);
-static char * cgroupRoot(char *line, char *prefix, const char *subsys);
+int parseNamespace(int);
+bool enterNamespace(int, int*);
+bool setCgroup(int, struct stat, const string &);
 
-int parseNamespace(int pid);
-bool enterNamespace(int pid, int* _fd);
-bool setCgroup(int pid, struct stat s, char * cg_path);
+int makeAncestors(string, mode_t);
+mode_t getUmask();
 
-int makeAncestors(char *path, mode_t perm);
-mode_t getUmask(void);
-
-char * parseProcFile(const char *procf, parseFn parse, char *prefix, const char *subsys);
-char * findCgroupPath(pid_t pid);
+string parseProcFile(string , parseFn, string &, string);
+string findCgroupPath(pid_t);
 
 bool isFileExisting(const char*);
 

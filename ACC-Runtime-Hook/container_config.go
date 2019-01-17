@@ -34,38 +34,7 @@ type containerConfig struct {
 	env    map[string]string
 }
 
-func parseEnvMap(env []string) (envMap map[string]string) {
-	envMap = make(map[string]string)
-	for _, s := range env {
-		param := strings.SplitN(s, "=", 2)
-		if len(param) != 2 {
-			log.Panicln("environment variable is not valid")
-		}
-		envMap[param[0]] = param[1]
-	}
-	return
-}
-
-func parseSpec(path string) (spec *Spec) {
-	file, err := os.Open(path)
-	if err != nil {
-		log.Panicln("OCI spec open error : ", err)
-	}
-	defer file.Close()
-
-	if err = json.NewDecoder(file).Decode(&spec); err != nil || spec.Process == nil || spec.Root == nil {
-		log.Panicln("OCI spec decode error : ", err)
-	}
-	return
-}
-
-func getDevices(env map[string]string) string {
-	if devices, result := env["ACC_VISIBLE_DEVICES"]; result {
-		return devices
-	}
-	return ""
-}
-
+// Parse STDIN to parse container configuration
 func parseContainerConfig() (config containerConfig) {
 	var hook HookState
 	in := json.NewDecoder(os.Stdin)
@@ -90,4 +59,39 @@ func parseContainerConfig() (config containerConfig) {
 		rootfs: rootfsPath,
 		env:    parseEnvMap(spec.Process.Env),
 	}
+}
+
+// Get required device list from env. var.s
+func getDevices(env map[string]string) string {
+	if devices, result := env["ACC_VISIBLE_DEVICES"]; result {
+		return devices
+	}
+	return ""
+}
+
+// Convert env. var.s into map
+func parseEnvMap(env []string) (envMap map[string]string) {
+	envMap = make(map[string]string)
+	for _, s := range env {
+		param := strings.SplitN(s, "=", 2)
+		if len(param) != 2 {
+			log.Panicln("environment variable is not valid")
+		}
+		envMap[param[0]] = param[1]
+	}
+	return
+}
+
+// Parse container spec from JSON
+func parseSpec(path string) (spec *Spec) {
+	file, err := os.Open(path)
+	if err != nil {
+		log.Panicln("OCI spec open error : ", err)
+	}
+	defer file.Close()
+
+	if err = json.NewDecoder(file).Decode(&spec); err != nil || spec.Process == nil || spec.Root == nil {
+		log.Panicln("OCI spec decode error : ", err)
+	}
+	return
 }

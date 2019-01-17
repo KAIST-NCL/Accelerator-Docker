@@ -11,11 +11,12 @@
 #define ERR_CODE_PARSE_DETECT_DEVICES_FAILED 12
 #define ERR_CODE_RELEASE_DEVICE_FAILED 13
 
+// Manager handling request/release of device on container
 class Manager{
     public:
-        Manager(Context*);
+        explicit Manager(Context*);
         bool requestDevices();
-        bool requestDevice(list<Device>::iterator);
+        bool requestDevice(Device&);
         bool releaseDevices();
 
         list<Accelerator> getAcceleratorList();

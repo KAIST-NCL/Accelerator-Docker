@@ -14,22 +14,23 @@
 
 #define ERR_CODE_ONLY_ABS_PATH_ALLOWED 31
 
+// Mounter class for mounting needed files to container
 class Mounter{
     public:
-        Mounter(Context*);
+        explicit Mounter(Context*);
         bool mountDevices(list<Device>);
         bool mountDevice(Device);
     private:
         Context* cont;
         bool mountDeviceFiles(list<string>);
-        bool mountDeviceFile(string, char*);
+        bool mountDeviceFile(string, string);
         bool mountLibraries(list<string>);
         bool mountLibrary(string);
         bool mountFiles(list<array<string,2>>);
         bool mountFile(string,string);
         bool setEnvs(list<array<string,2>>);
 
-        bool createDev(char*, char*,struct stat);
+        bool createDev(string,struct stat);
 };
 
 #endif

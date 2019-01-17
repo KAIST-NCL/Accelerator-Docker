@@ -3,6 +3,7 @@
 
 #include "common.hpp"
 
+// For switching device drivers --> not used yet
 class DriverManager{
     public:
         DriverManager();

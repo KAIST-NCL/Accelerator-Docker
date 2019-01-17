@@ -1,6 +1,8 @@
 #include "cli.hpp"
 #include "driver-manager.hpp"
 
+// Driver Manager
+// : Handles device driver switch --> not implemented yet
 DriverManager::DriverManager(){}
 bool DriverManager::switchDriver(Device device, Driver target){
     return true;

@@ -14,49 +14,6 @@ import (
 
 var defaultPATH = []string{"/usr/local/sbin", "/usr/local/bin", "/usr/sbin", "/usr/bin", "/sbin", "/bin"}
 
-func getManagerPath() string {
-	dirs := filepath.SplitList(os.Getenv("PATH"))
-	dirs = append(dirs, defaultPATH...)
-	if err := os.Setenv("PATH", strings.Join(dirs, ":")); err != nil {
-		log.Panicln("PATH set error : ", err)
-	}
-	path, err := exec.LookPath("acc-manager")
-	if err != nil {
-		log.Panicln("finding binary acc-manager in", os.Getenv("PATH"), " error : ", err)
-	}
-	return path
-}
-
-func prestartHook() {
-	container := parseContainerConfig()
-
-	args := []string{getManagerPath()}
-	args = append(args, "configure")
-	args = append(args, fmt.Sprintf("--device=%s", getDevices(container.env)))
-	args = append(args, fmt.Sprintf("--pid=%s", strconv.FormatUint(uint64(container.pid), 10)))
-	args = append(args, container.rootfs)
-
-	fmt.Printf("exec command : %v\n", args)
-	err := syscall.Exec(args[0], args, os.Environ())
-	if err != nil {
-		log.Panicln("exec error : ", err)
-	}
-}
-
-func poststopHook() {
-	container := parseContainerConfig()
-
-	args := []string{getManagerPath()}
-	args = append(args, "release")
-	args = append(args, fmt.Sprintf("--pid=%s", strconv.FormatUint(uint64(container.pid), 10)))
-
-	fmt.Printf("exec command : %v\n", args)
-	err := syscall.Exec(args[0], args, os.Environ())
-	if err != nil {
-		log.Panicln("exec error : ", err)
-	}
-}
-
 func main() {
 	flag.Parse()
 
@@ -76,5 +33,53 @@ func main() {
 		os.Exit(0)
 	default:
 		os.Exit(2)
+	}
+}
+
+// Fetch 'acc-manager' binary path
+func getManagerPath() string {
+	dirs := filepath.SplitList(os.Getenv("PATH"))
+	dirs = append(dirs, defaultPATH...)
+	if err := os.Setenv("PATH", strings.Join(dirs, ":")); err != nil {
+		log.Panicln("PATH set error : ", err)
+	}
+	path, err := exec.LookPath("acc-manager")
+	if err != nil {
+		log.Panicln("finding binary acc-manager in", os.Getenv("PATH"), " error : ", err)
+	}
+	return path
+}
+
+// Prestart Hook
+// Call : acc-manager configure --device=<DEVICES> --pid=<PID> <ROOTFS>
+func prestartHook() {
+	container := parseContainerConfig()
+
+	args := []string{getManagerPath()}
+	args = append(args, "configure")
+	args = append(args, fmt.Sprintf("--device=%s", getDevices(container.env)))
+	args = append(args, fmt.Sprintf("--pid=%s", strconv.FormatUint(uint64(container.pid), 10)))
+	args = append(args, container.rootfs)
+
+	fmt.Printf("exec command : %v\n", args)
+	err := syscall.Exec(args[0], args, os.Environ())
+	if err != nil {
+		log.Panicln("exec error : ", err)
+	}
+}
+
+// Poststop Hook
+// Call : acc-manager release --pid=<PID>
+func poststopHook() {
+	container := parseContainerConfig()
+
+	args := []string{getManagerPath()}
+	args = append(args, "release")
+	args = append(args, fmt.Sprintf("--pid=%s", strconv.FormatUint(uint64(container.pid), 10)))
+
+	fmt.Printf("exec command : %v\n", args)
+	err := syscall.Exec(args[0], args, os.Environ())
+	if err != nil {
+		log.Panicln("exec error : ", err)
 	}
 }

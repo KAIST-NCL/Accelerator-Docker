@@ -22,25 +22,23 @@ int main(int argc, char** argv)
 
     char** it;
     for (it = argv; it < argv + argc; it++) {
-        for (int i = 0; i < COMMAND_CNT; i++) {
+        for (const auto &cmd : command_list) {
             string arg(it[0]);
-            if (arg.compare(command_list[i].name) == 0) {
-                index = it - argv;
+            if (arg == cmd.name) {
+                index = (int)(it - argv);
                 argv_n = it;
                 argc_n = argc - index;
 
-                if (!command_list[i].parse_fn(argc_n, argv_n, &ctx)) {
-                  // print out help
-                  help_command(NULL);
+                // First parse command line for given command
+                if (!cmd.parse_fn(argc_n, argv_n, &ctx)) {
+                  // Print out help
+                  help_command(nullptr);
                   return ERR_CODE_PARSE_ERROR;
-                    //errx(ERR_CODE_PARSE_ERROR,"[%s] command parsing error",it[0]);
-                    //return ERR_CODE_PARSE_ERROR;
                 }
-                if (!command_list[i].func(&ctx)) {
-                  help_command(NULL);
+                // Execute the command
+                if (!cmd.func(&ctx)) {
+                  help_command(nullptr);
                   return ERR_CODE_FUNC_ERROR;
-                    //errx(ERR_CODE_FUNC_ERROR,"[%s] command execution error",it[0]);
-                    //return ERR_CODE_FUNC_ERROR;
                 }
                 return EXIT_CODE_SUCCESS;
             }

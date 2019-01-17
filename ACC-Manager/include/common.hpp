@@ -53,6 +53,7 @@ using namespace std;
 
 class Device;
 
+// Context class for storing container info.
 class Context {
     public:
         Context(uid_t,gid_t);
@@ -84,9 +85,10 @@ class Context {
         list<string> req_devices_name;
 };
 
+// Accelerator container, refer to device.proto
 class Accelerator{
     public:
-        Accelerator(string);
+        explicit Accelerator(string);
         string getType();
         list<Device> getDevices();
         void setDevices(list<Device>);
@@ -96,6 +98,7 @@ class Accelerator{
         list<Device> devices;
 };
 
+// Device container, refer to device.proto
 class Device{
     public:
         enum Status{
@@ -103,7 +106,7 @@ class Device{
             UNAVAILABLE,
             MISCONFIGURED
         };
-        Device(string);
+        explicit Device(string);
 
         list<string> getDeviceFiles();
         list<string> getLibraries();
@@ -133,16 +136,18 @@ class Device{
         string name;
         string id;
         pid_t pid;
-        list<string> devs;
-        list<string> libs;
-        list<array<string,2>> files;
-        list<array<string,2>> envs;
+        list<string> devs;              // device files
+        list<string> libs;              // library files
+        list<array<string,2>> files;    // files
+        list<array<string,2>> envs;     // env vars
         string pciSlot;
         uint16_t vendorID;
         uint16_t deviceID;
         uint16_t subVendorID;
         uint16_t subDeviceID;
 };
+
+// Class for auto-detect --> not implemented yet
 class Driver{
     public:
         Driver(string _name, int _vendorID, int _deviceID, int _subVendorID, int _subDeviceID);
