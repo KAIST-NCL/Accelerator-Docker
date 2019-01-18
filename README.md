@@ -46,7 +46,7 @@ accelerators:[{
     type: "xilinx.fpga/kcu1500",
     devices:{
         devices:[{
-            name: KCU-1500,
+            name: "KCU-1500",
             device_file:[
                 "/dev/xcldev1",
                 "/dev/xdmadev1"
@@ -87,3 +87,4 @@ $ acc-manager list
 * [Eunju Yang](https://github.com/EunjuYang)
 
 ## License
+This project is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0), see [LICENSE](LICENSE) for more information.
