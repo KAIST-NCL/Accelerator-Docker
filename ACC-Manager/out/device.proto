@@ -29,7 +29,7 @@ message device {
 
 message accelerator {
     required string type = 1;
-    optional device_list devices = 2;
+    repeated device devices = 2;
 }
 
 message device_list {

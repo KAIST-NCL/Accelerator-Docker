@@ -1,32 +1,30 @@
 accelerators:[{
     type: "intel.fpga/arria10gx_devkit",
-    devices :{
-        devices: [{
-            name: "arria10gx-devkit-0",
-            pci: "0000:05:00.0",
-            device_file:[
-                "/dev/acla10_vfpga0"
-            ],
-            library:[
-                "/home/ncl/intelFPGA_pro/17.1/hld/host/linux64/lib/libOpenCL.so.1",
-                "/home/ncl/intelFPGA_pro/17.1/hld/host/linux64/lib/libalteracl.so",
-                "/home/ncl/intelFPGA_pro/17.1/hld/host/linux64/lib/libacl_emulator_kernel_rt.so",
-                "/home/ncl/intelFPGA_pro/17.1/hld/host/linux64/lib/libelf.so.0"
-            ],
-            file:[{
-                src: "/home/ncl/intelFPGA_pro/17.1/hld/board/a10_ref/linux64/lib/libaltera_a10_ref_mmd.so",
-                dst: "/home/ncl/intelFPGA_pro/17.1/hld/board/a10_ref/linux64/lib/libaltera_a10_ref_mmd.so"
-            },{
-                src: "/etc/OpenCL/vendors/Altera.icd",
-                dst: "/etc/OpenCL/vendors/Altera.icd"
-            },{
-                src: "/opt/Intel/OpenCL/Boards/a10_ref.fcd",
-                dst: "/opt/Intel/OpenCL/Boards/a10_ref.fcd"
-            }],
-            env:[{
-                key: "EXAMPLE",
-                val: "val"
-            }]
+    devices: [{
+        name: "arria10gx-devkit-0",
+        pci: "0000:05:00.0",
+        device_file:[
+            "/dev/acla10_vfpga0"
+        ],
+        library:[
+            "/home/ncl/intelFPGA_pro/17.1/hld/host/linux64/lib/libOpenCL.so.1",
+            "/home/ncl/intelFPGA_pro/17.1/hld/host/linux64/lib/libalteracl.so",
+            "/home/ncl/intelFPGA_pro/17.1/hld/host/linux64/lib/libacl_emulator_kernel_rt.so",
+            "/home/ncl/intelFPGA_pro/17.1/hld/host/linux64/lib/libelf.so.0"
+        ],
+        file:[{
+            src: "/home/ncl/intelFPGA_pro/17.1/hld/board/a10_ref/linux64/lib/libaltera_a10_ref_mmd.so",
+            dst: "/home/ncl/intelFPGA_pro/17.1/hld/board/a10_ref/linux64/lib/libaltera_a10_ref_mmd.so"
+        },{
+            src: "/etc/OpenCL/vendors/Altera.icd",
+            dst: "/etc/OpenCL/vendors/Altera.icd"
+        },{
+            src: "/opt/Intel/OpenCL/Boards/a10_ref.fcd",
+            dst: "/opt/Intel/OpenCL/Boards/a10_ref.fcd"
+        }],
+        env:[{
+            key: "EXAMPLE",
+            val: "val"
         }]
-    }
+    }]
 }]

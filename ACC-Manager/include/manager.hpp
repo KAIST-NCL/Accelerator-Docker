@@ -4,6 +4,7 @@
 #include "utils.hpp"
 #include "mounter.hpp"
 #include "device-detector.hpp"
+#include "device-parser.hpp"
 
 #define ERR_CODE_DEVICE_LOCKED 10
 #define ERR_CODE_DEVICE_NOT_FOUND 11

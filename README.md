@@ -44,26 +44,24 @@ First, you need to provide device list you want to access from docker container 
 ```protobuf
 accelerators:[{
     type: "xilinx.fpga/kcu1500",
-    devices:{
-        devices:[{
-            name: "KCU-1500",
-            device_file:[
-                "/dev/xcldev1",
-                "/dev/xdmadev1"
-            ],
-            library:[
-                "/PATH/TO/LIB/libxilinxopencl.so"
-            ],
-            file:[{
-                src: "/PATH/IN/HOST/libxclgemdrv.so",
-                dst: "/PATH/IN/CONTAINER/libxclgemdrv.so",
-            }],
-            env:[{
-                key: "XILINX_SDX",
-                val: "/SDX"
-            }]
+    devices:[{
+        name: "KCU-1500",
+        device_file:[
+            "/dev/xcldev1",
+            "/dev/xdmadev1"
+        ],
+        library:[
+            "/PATH/TO/LIB/libxilinxopencl.so"
+        ],
+        file:[{
+            src: "/PATH/IN/HOST/libxclgemdrv.so",
+            dst: "/PATH/IN/CONTAINER/libxclgemdrv.so",
+        }],
+        env:[{
+            key: "XILINX_SDX",
+            val: "/SDX"
         }]
-    }
+    }]
 }]
 ```
 - Files specified in 'library' section are mounted to '/usr/lib' of container, while the files specified in 'file' section are mounted to specific path.
