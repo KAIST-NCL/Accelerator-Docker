@@ -34,9 +34,9 @@ string findCgroupPath(pid_t pid){
     string mount, root;
     string path;
 
-    path = "/proc" + to_string(getppid()) + "/mountinfo";
+    path = "/proc/" + to_string(getppid()) + "/mountinfo";
     mount = parseProcFile(path, cgroupMount, root_prefix, "devices");
-    path = "/proc" + to_string(pid) + "/cgroup";
+    path = "/proc/" + to_string(pid) + "/cgroup";
     root = parseProcFile(path, cgroupRoot, root_prefix, "devices");
 
     return mount+root;
