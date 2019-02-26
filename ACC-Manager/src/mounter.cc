@@ -127,10 +127,7 @@ bool Mounter::mountFile(string src,string dst_rel){
     perm = (0777 & ~getUmask()) | S_IWUSR | S_IXUSR;
     makeAncestors(dirname(dir_tmp), perm);
 
-    // TODO : handle directory
-    if(S_ISDIR(mode.st_mode)){
-        return false;
-    }else if(S_ISLNK(mode.st_mode)){
+    if(S_ISLNK(mode.st_mode)){ 
         // If it is a link, make a link as same way from host and mount target file (recursively)
         char lnk_buf[1024];
         ssize_t len;
@@ -178,9 +175,14 @@ bool Mounter::mountFile(string src,string dst_rel){
         }
         symlink(lnk_buf,dst_c); // Make link in container
         return mountFile(lnk_src,lnk_dst);
-    }else if(S_ISREG(mode.st_mode)){
-        std::ofstream dest(dst_c, std::ios::binary);
-        dest.close();
+    }else if(S_ISREG(mode.st_mode) || S_ISDIR(mode.st_mode)){
+        if(S_ISREG(mode.st_mode)){
+            std::ofstream dest(dst_c, std::ios::binary);
+            dest.close();
+        }
+        else{
+            mkdir(dst_c,perm);
+        }
         mount(src_c,dst_c,NULL,MS_BIND,NULL);
         mount(NULL,dst_c,NULL,MS_BIND | MS_REMOUNT | MS_RDONLY | MS_NODEV | MS_NOSUID,NULL);
         return true;
