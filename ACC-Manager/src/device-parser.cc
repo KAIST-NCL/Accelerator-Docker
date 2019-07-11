@@ -129,25 +129,26 @@ map<string,Device> DeviceParser::devListToDevMap(list<Device> devList){
 }
 
 // Check if accelerator list is valid
-bool DeviceParser::isListValid(list<Accelerator> accList){
+bool DeviceParser::isListValid(list<Accelerator>& accList){
     // TODO: Check validity of accelerator type and device name
-    for(auto const & it : accList){
-        bool tmp = isAcceleratorValid(it);
-        if(!tmp)
-            return false;
+    bool res = true;
+    for(auto & it : accList){
+        res = isAcceleratorValid(it) && res;
     }
-    return true;
+    return res;
 }
 
 // Check if an Accelerator class valid
-bool DeviceParser::isAcceleratorValid(Accelerator acc){
-    list<Device> deviceList = acc.getDevices();
-    for(auto const & it : deviceList){
+bool DeviceParser::isAcceleratorValid(Accelerator& acc){
+    list<Device>& deviceList = acc.getDevices();
+    bool res = true;
+    for(auto & it : deviceList){
         bool tmp = isDeviceValid(it);
         if(!tmp)
-            return false;
+            it.setStatus(Device::Status::MISCONFIGURED);
+        res = tmp && res;
     }
-    return true;
+    return res;
 }
 
 // Check if a Device class valid

@@ -85,7 +85,7 @@ bool Manager::updateStatusFile(){
             device::device *dev = stat_list->add_devices();
             //only need to store name, status, pid, id
             dev->set_name(it_dev.getName());
-            dev->set_id(generateDeviceId(it_dev));
+            dev->set_id(it_dev.getId());
             dev->set_status(it_dev.getStatus() == Device::Status::MISCONFIGURED ? device::device_Status_MISS : it_dev.getStatus() == Device::Status::AVAILABLE ? device::device_Status::device_Status_IDLE : device::device_Status::device_Status_USED);
             dev->set_pid(it_dev.getPid());
         }

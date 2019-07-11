@@ -25,8 +25,8 @@ private:
     list<Device> protoToDeviceList(const device::device_list*);            // For status file
     Device protoToDevice(const device::device*);
     map<string,Device> devListToDevMap(list<Device>);
-    bool isListValid(list<Accelerator>);
-    bool isAcceleratorValid(Accelerator);
+    bool isListValid(list<Accelerator>&);
+    bool isAcceleratorValid(Accelerator&);
     bool isDeviceValid(Device);
 };
 #endif

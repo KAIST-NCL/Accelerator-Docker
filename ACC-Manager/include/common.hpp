@@ -90,7 +90,7 @@ class Accelerator{
     public:
         explicit Accelerator(string);
         string getType();
-        list<Device> getDevices();
+        list<Device>& getDevices();
         void setDevices(list<Device>);
         void addDevice(Device);
     private:

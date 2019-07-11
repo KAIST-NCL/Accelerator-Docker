@@ -72,7 +72,7 @@ void Context::addReqDevice(const string dev){req_devices_name.push_back(dev);}
 
 Accelerator::Accelerator(const string _type): type(_type){}
 string Accelerator::getType(){ return type; }
-list<Device> Accelerator::getDevices(){ return devices; }
+list<Device>& Accelerator::getDevices(){ return devices; }
 void Accelerator::setDevices(const list<Device> _devs){
     devices = _devs;
 }
