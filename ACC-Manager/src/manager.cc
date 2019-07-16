@@ -8,6 +8,7 @@ Manager::Manager(Context* _ctx) : ctx(_ctx){
     if(!parseAndDetectAccelerators()){
         errx(ERR_CODE_PARSE_DETECT_DEVICES_FAILED,"detect and parsing devices failed");
     }
+    updateStatusFile();
 }
 
 // Provide pass through of all requested devices to container
@@ -96,6 +97,7 @@ bool Manager::updateStatusFile(){
         errx(1,"Writing status file failed");
         return false;
     }
+    chmod(ctx->getStatusFilePath(), 0777);
     return true;
 }
 

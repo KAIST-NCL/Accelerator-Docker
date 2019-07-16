@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <fstream>
 #include <string>
+#include <regex>
 #include <google/protobuf/text_format.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include "device.pb.h"
@@ -20,6 +21,8 @@ public:
 private:
     char* statusFilePath;
     char* deviceFilePath;
+
+    set<string> deviceNamesTmp;
 
     list<Accelerator> protoToAccelerator(device::accelerator_list*);    // For user-specified file
     list<Device> protoToDeviceList(const device::device_list*);            // For status file

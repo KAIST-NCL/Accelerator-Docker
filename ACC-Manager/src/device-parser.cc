@@ -46,9 +46,6 @@ bool DeviceParser::parse(list<Accelerator>* to){
                     it_dev.setStatus(Device::Status::AVAILABLE);
                     it_dev.setPid(0);
                 }
-                // Validity check and set as MISCONFIGURED status if something is not configured correctly
-                if(!isDeviceValid(it_dev))
-                    it_dev.setStatus(Device::Status::MISCONFIGURED);
             }
         }
         it_acc.setDevices(devs);
@@ -130,8 +127,8 @@ map<string,Device> DeviceParser::devListToDevMap(list<Device> devList){
 
 // Check if accelerator list is valid
 bool DeviceParser::isListValid(list<Accelerator>& accList){
-    // TODO: Check validity of accelerator type and device name
     bool res = true;
+    deviceNamesTmp.clear();
     for(auto & it : accList){
         res = isAcceleratorValid(it) && res;
     }
@@ -140,22 +137,48 @@ bool DeviceParser::isListValid(list<Accelerator>& accList){
 
 // Check if an Accelerator class valid
 bool DeviceParser::isAcceleratorValid(Accelerator& acc){
+    bool accValid = true;
+    // Accelerator type check (for k8s compatibility)
+    regex reg("([0-9a-zA-Z-\\._]{0,253}\\/)?[0-9a-zA-Z]?[0-9a-zA-Z-\\._]{0,61}[0-9a-zA-Z]?");
+    if(! regex_match(acc.getType(), reg)){
+        cerr << "ERROR [" << acc.getType() << "] Type is not valid. Please use k8s 'label' naming rule.\n";
+        accValid = false;
+    }
+
     list<Device>& deviceList = acc.getDevices();
-    bool res = true;
+    bool res = false;
     for(auto & it : deviceList){
         bool tmp = isDeviceValid(it);
-        if(!tmp)
+        // Validity check and set as MISCONFIGURED status if something is not configured correctly
+        if(!tmp || !accValid)
             it.setStatus(Device::Status::MISCONFIGURED);
-        res = tmp && res;
+        res = tmp && res && accValid;
     }
     return res;
 }
 
 // Check if a Device class valid
 bool DeviceParser::isDeviceValid(Device device){
+    bool res = true;
     list<string> devs = device.getDeviceFiles();
     list<string> libs = device.getLibraries();
     list<array<string,2>> files = device.getFiles();
+
+    // Check naming rule
+    device.setName(trim(device.getName()));
+    regex reg("([0-9a-zA-Z-\\._]{0,253}\\/)?[0-9a-zA-Z]?[0-9a-zA-Z-\\._]{0,61}[0-9a-zA-Z]?");
+    if(! regex_match(device.getName(), reg)){
+        cerr << "ERROR [" << device.getName() << "] Name is not valid. Please use k8s 'label' naming rule.\n";
+        res = false;
+    }
+
+    // Check name duplications
+    if(deviceNamesTmp.find(device.getName()) == deviceNamesTmp.end()){
+        deviceNamesTmp.insert(device.getName());
+    }else{
+        cerr << "ERROR [" << device.getName() << "] Name is duplicated.\n";
+        res = false;
+    }
 
     // Append device file, library file, file list together
     list<string> files_arr;
@@ -166,16 +189,16 @@ bool DeviceParser::isDeviceValid(Device device){
     for(auto it : files){
         files_arr.push_back(it.at(0));
         if(it.at(1).empty()){
-            //errx(1,"Destination for [%s] is not specified\n",it.at(0).c_str());
-            return false;
+            cerr << "ERROR [" << device.getName() << "] Destination for [" << it.at(0) << "] is not specified\n";
+            res = false;
         }
     }
 
     // Check if the files exist
     for(auto const & it : files_arr){
         if( ! isFileExisting(it.c_str()) ){
-            //errx(1,"File [%s] not exists\n",it->c_str());
-            return false;
+            cerr << "ERROR [" << device.getName() << "] File [" << it<< "] not exists\n";
+            res = false;
         }
     }
 
@@ -186,5 +209,5 @@ bool DeviceParser::isDeviceValid(Device device){
     uint16_t subVendorID = device.getSubVendorID();
     uint16_t subDeviceID = device.getSubDeviceID();
 
-    return true;
+    return res;
 }

@@ -37,6 +37,7 @@ $(T_PARSER): $(clean) $(OBJS)
 install:
 	cp $(OUT_DIR)/$(TARGET) /usr/bin/$(TARGET)
 	if [ -f "$(OUT_DIR)/libprotobuf.so.17" ]; then cp $(OUT_DIR)/libprotobuf.so.17 /usr/local/lib/libprotobuf.so.17; fi
+	/usr/bin/$(TARGET) list
 
 clean:
 	rm -rf $(BUILD_DIR)

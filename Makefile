@@ -42,9 +42,9 @@ $(MANAGER_BIN)-cont-ubuntu16.04: pre
 	cp $(MANAGER_DIR)/$(OUT_DIR)/libprotobuf* $(OUT_DIR)/
 
 install:
-	\cp $(CURDIR)/$(OUT_DIR)/$(RUNTIME_BIN) /usr/bin/$(RUNTIME_BIN)
-	\cp $(CURDIR)/$(OUT_DIR)/$(HOOK_BIN) /usr/bin/$(HOOK_BIN)
-	\cp $(CURDIR)/$(OUT_DIR)/$(MANAGER_BIN) /usr/bin/$(MANAGER_BIN)
+	make -C $(RUNTIME_DIR) install
+	make -C $(HOOK_DIR) install
+	make -C $(MANAGER_DIR) install
 	if [ -f "/etc/docker/daemon.json" ]; then mv /etc/docker/daemon.json /etc/docker/daemon.json.bak; fi
 	\cp ./daemon.json /etc/docker/daemon.json
 uninstall:

@@ -30,3 +30,7 @@ clean:
 	rm -rf $(TMP_GO_PATH)
 	rm -rf $(OUT_DIR)
 	if [ "$(shell docker images -q acc/runtime/ubuntu:16.04 2> /dev/null)" != "" ]; then docker rmi "acc/runtime/ubuntu:16.04"; fi
+
+install:
+	cp $(OUT_DIR)/$(TARGET) /usr/bin/$(TARGET)
+

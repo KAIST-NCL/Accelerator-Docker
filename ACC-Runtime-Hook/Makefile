@@ -16,8 +16,9 @@ cont-ubuntu16.04:
 	docker run --rm -v $(CURDIR)/$(OUT_DIR):/dist:Z -u $(shell id -u):$(shell id -g) "acc/hook/ubuntu:16.04" /bin/bash -c "cp /ACC-Runtime-Hook/out/acc-runtime-hook /dist"
 
 install: 
-	sudo cp $(OUT_DIR)/${BIN_NAME} /usr/bin/${BIN_NAME}
+	cp $(OUT_DIR)/${BIN_NAME} /usr/bin/${BIN_NAME}
 
 clean:
 	rm -rf $(OUT_DIR)
 	if [ "$(shell docker images -q acc/hook/ubuntu:16.04 2> /dev/null)" != "" ]; then docker rmi "acc/hook/ubuntu:16.04"; fi
+
