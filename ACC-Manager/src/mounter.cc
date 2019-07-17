@@ -24,11 +24,15 @@ bool Mounter::mountDevice(Device device){
     list<array<string,2>> files = device.getFiles();
     list<array<string,2>> envs = device.getEnvs();
 
+    int fd_mnt_ori;
+    fd_mnt_ori = parseNamespace(0); // Original namespace of acc-manager process
+    enterNamespace(cont->getPid(), nullptr); // Enter container's namespace
     result = result &&
             mountDeviceFiles(dev_files) &&
             mountLibraries(lib_files) &&
             mountFiles(files) &&
             setEnvs(envs);
+    enterNamespace(0, &fd_mnt_ori); // Escape from container's namespace
     return result;
 }
 
@@ -57,12 +61,8 @@ bool Mounter::mountDeviceFile(string dev, string cg_path){
     strcpy(dst, cont->getRootFs().c_str());
     strcat(dst, src);
 
-    int fd_mnt_ori;
-    fd_mnt_ori = parseNamespace(0); // Original namespace of acc-manager process
-    enterNamespace(cont->getPid(), nullptr); // Enter container's namespace
     createDev(dst, s); // Create device file on container
     setCgroup(cont->getPid(), s,cg_path); // Allow the namespace can use accelerator file
-    enterNamespace(0, &fd_mnt_ori); // Escape from container's namespace
     return true;
 }
 
@@ -184,7 +184,7 @@ bool Mounter::mountFile(string src,string dst_rel){
             mkdir(dst_c,perm);
         }
         mount(src_c,dst_c,NULL,MS_BIND,NULL);
-        mount(NULL,dst_c,NULL,MS_BIND | MS_REMOUNT | MS_RDONLY | MS_NODEV | MS_NOSUID,NULL);
+        mount(NULL,dst_c,NULL,MS_BIND | MS_REMOUNT | MS_RDONLY | MS_NODEV | MS_NOSUID | MS_REC,NULL);
         return true;
     }else{
         return false;
