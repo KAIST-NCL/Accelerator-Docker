@@ -158,11 +158,11 @@ bool DeviceParser::isAcceleratorValid(Accelerator& acc){
 }
 
 // Check if a Device class valid
-bool DeviceParser::isDeviceValid(Device device){
+bool DeviceParser::isDeviceValid(Device& device){
     bool res = true;
-    list<string> devs = device.getDeviceFiles();
-    list<string> libs = device.getLibraries();
-    list<array<string,2>> files = device.getFiles();
+    list<string>& devs = device.getDeviceFiles();
+    list<string>& libs = device.getLibraries();
+    list<array<string,2> >& files = device.getFiles();
 
     // Check naming rule
     device.setName(trim(device.getName()));
@@ -178,6 +178,47 @@ bool DeviceParser::isDeviceValid(Device device){
     }else{
         cerr << "ERROR [" << device.getName() << "] Name is duplicated.\n";
         res = false;
+    }
+
+    // Convert shared library to absolute path using ldcache
+    for(auto &it : libs){
+        if(it.find_first_of('/') !=  0){
+            if(ld_cache.empty()){
+                ld_cache = exec("ldconfig -p");
+            }
+            if(machine_arch.empty()){
+                struct utsname sysinfo;
+                uname(&sysinfo);
+                machine_arch=string(sysinfo.machine);
+            }
+            string libtype;
+            string abs_path;
+            
+            regex specialChars { R"([-[\]{}()*+?.,\^$|#\s])" };
+            string sanitized = regex_replace( it, specialChars, R"(\$&)" );
+
+            regex reg("[ \t\n]*("+sanitized+") \\(([^\\)]*)\\) => ([^ \t\n]*)[ \t\n]*", regex::optimize);
+            smatch m;
+
+            istringstream f(ld_cache);
+            string line;
+            while(getline(f, line)){
+                if(regex_match(line, m, reg)){
+                    string now_libtype = m.str(2);
+                    string now_abs_path = m.str(3);
+
+                    if((libtype.empty() && abs_path.empty()) || (libtype.find(machine_arch) == string::npos && now_libtype.find(machine_arch) != string::npos)){
+                        libtype = now_libtype;
+                        abs_path = now_abs_path;
+                    }
+                }
+            }
+            if(!libtype.empty() && !abs_path.empty()){
+                cout << "WARNING [" << device.getName() << "] Library [" << it << "] changed to [" << abs_path << "] by using LD Cache.\n"
+                        "         This makes starting container slow. If possible, specify library path in absolute path.\n";
+                it = abs_path;
+            }
+        }
     }
 
     // Append device file, library file, file list together

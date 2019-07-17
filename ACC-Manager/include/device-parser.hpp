@@ -11,6 +11,7 @@
 #include "device.pb.h"
 #include "common.hpp"
 #include "utils.hpp"
+#include <sys/utsname.h>
 
 // Device parser for parsing user-defined pass through configuration
 class DeviceParser{
@@ -22,14 +23,16 @@ private:
     char* statusFilePath;
     char* deviceFilePath;
 
-    set<string> deviceNamesTmp;
-
     list<Accelerator> protoToAccelerator(device::accelerator_list*);    // For user-specified file
     list<Device> protoToDeviceList(const device::device_list*);            // For status file
     Device protoToDevice(const device::device*);
     map<string,Device> devListToDevMap(list<Device>);
     bool isListValid(list<Accelerator>&);
     bool isAcceleratorValid(Accelerator&);
-    bool isDeviceValid(Device);
+    bool isDeviceValid(Device&);
+
+    set<string> deviceNamesTmp;
+    string ld_cache;
+    string machine_arch;
 };
 #endif

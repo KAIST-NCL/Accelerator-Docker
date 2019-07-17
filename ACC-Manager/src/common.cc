@@ -85,10 +85,10 @@ Device::Device(const string _name): name(_name){
     status = Status::AVAILABLE;
     pid = 0;
 }
-list<string> Device::getDeviceFiles(){ return devs; }
-list<string> Device::getLibraries(){ return libs; }
-list<array<string,2>> Device::getFiles(){ return files; }
-list<array<string,2>> Device::getEnvs(){ return envs; }
+list<string>& Device::getDeviceFiles(){ return devs; }
+list<string>& Device::getLibraries(){ return libs; }
+list<array<string,2>>& Device::getFiles(){ return files; }
+list<array<string,2>>& Device::getEnvs(){ return envs; }
 Device::Status Device::getStatus(){ return status; }
 string Device::getName(){ return name; }
 string Device::getId(){ return id; }

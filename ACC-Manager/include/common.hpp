@@ -108,10 +108,10 @@ class Device{
         };
         explicit Device(string);
 
-        list<string> getDeviceFiles();
-        list<string> getLibraries();
-        list<array<string,2>> getFiles();
-        list<array<string,2>> getEnvs();
+        list<string>& getDeviceFiles();
+        list<string>& getLibraries();
+        list<array<string,2> >& getFiles();
+        list<array<string,2> >& getEnvs();
         Device::Status getStatus();
         string getName();
         string getId();

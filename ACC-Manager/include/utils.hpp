@@ -62,5 +62,7 @@ inline std::string ltrim(std::string s,const std::string& drop = TRIM_SPACE)
     return s.erase(0,s.find_first_not_of(drop));
 }
 
+string exec(const char* cmd);
+
 #endif
 
