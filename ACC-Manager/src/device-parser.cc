@@ -12,6 +12,12 @@ bool DeviceParser::parse(list<Accelerator>* to){
     auto *usr_list = new device::accelerator_list();
     auto *stat_list = new device::device_list();
 
+    string statusFileParent = string(statusFilePath).substr(0, string(statusFilePath).find_last_of("/\\"));
+    string deviceFileParent = string(deviceFilePath).substr(0, string(deviceFilePath).find_last_of("/\\"));
+
+    makeAncestors(statusFileParent, 0777);
+    makeAncestors(deviceFileParent, 0777);
+
     // Status file : stat.pb (binary)
     fstream fd1(statusFilePath,ios::in | ios::binary);
     stat_list->ParseFromIstream(&fd1);
@@ -193,7 +199,7 @@ bool DeviceParser::isDeviceValid(Device& device){
             }
             string libtype;
             string abs_path;
-            
+
             regex specialChars { R"([-[\]{}()*+?.,\^$|#\s])" };
             string sanitized = regex_replace( it, specialChars, R"(\$&)" );
 
