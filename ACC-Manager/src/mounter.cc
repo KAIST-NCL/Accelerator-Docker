@@ -197,7 +197,8 @@ bool Mounter::mountFile(string src,string dst_rel){
 bool Mounter::setEnvs(list<array<string,2>> envs){
     string dst = joinRootfsPath(cont->getRootFs(),"/.tmp_env");
 
-    ofstream outFile(dst);
+    ofstream outFile;
+    outFile.open(dst, fstream::out | fstream::app);
     if(outFile.is_open()){
         for(auto const & it : envs){
             outFile << it.at(0) << "=" << it.at(1) << endl;
