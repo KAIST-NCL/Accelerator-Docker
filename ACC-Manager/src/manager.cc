@@ -21,7 +21,7 @@ bool Manager::requestDevices(){
             for(auto & it_dev : dev_list){
                 // if given 'ACC_VISIBLE_DEVICES' equal to device name or id or 'all', provide the device
                 if(caseInSensStringCompare(it_st,it_dev.getName()) || caseInSensStringCompare(it_st,it_dev.getId()) || caseInSensStringCompare(it_st,string("all"))){
-                    if(it_dev.getStatus() == Device::Status::UNAVAILABLE){
+                    if(it_dev.getStatus() == Device::Status::UNAVAILABLE && it_dev.getPid() != ctx->getPid()){
                         errx(ERR_CODE_DEVICE_LOCKED,"[%s] device locked by other process",it_st.c_str());
                         return false;
                     }
