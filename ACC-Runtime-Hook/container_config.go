@@ -63,10 +63,17 @@ func parseContainerConfig() (config containerConfig) {
 
 // Get required device list from env. var.s
 func getDevices(env map[string]string) string {
+	ret_devices := []string{}
+	// Find Key with ACC_VISIBLE_DEVICES_*
+	for k, v := range env {
+		if strings.HasPrefix(k,"ACC_VISIBLE_DEVICES_") {
+			ret_devices = append(ret_devices, v)
+		}
+        }
 	if devices, result := env["ACC_VISIBLE_DEVICES"]; result {
-		return devices
+		ret_devices = append(ret_devices, devices)
 	}
-	return ""
+	return strings.Join(ret_devices[:], ",")
 }
 
 // Convert env. var.s into map
