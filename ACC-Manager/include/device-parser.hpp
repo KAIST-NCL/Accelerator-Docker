@@ -1,6 +1,12 @@
 #ifndef _ACC_MANAGER_DEVICE_PARSER
 #define _ACC_MANAGER_DEVICE_PARSER
 
+#ifdef VERBOSE
+#define ACC_VERBOSE true
+#else
+#define ACC_VERBOSE false
+#endif
+
 #include <iostream>
 #include <fcntl.h>
 #include <fstream>
