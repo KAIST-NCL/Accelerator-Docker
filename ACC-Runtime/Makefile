@@ -7,6 +7,7 @@ TMP_GO_ABS := $(CURDIR)/$(TMP_GO_PATH)
 ENV_GOPATH := env GOPATH=$(TMP_GO_ABS)
 
 RUNC_REPO:=github.com/opencontainers/runc
+RUNC_BRANCH := 718a566e02044b17f9894f7536640f2cfde8bff9
 
 TARGET := acc-runtime
 
@@ -16,6 +17,7 @@ $(TARGET):
 	@if [ ! -d "$(TMP_GO_ABS)" ]; then mkdir $(TMP_GO_ABS); fi
 	@echo Setting temp. GOPATH as [$(TMP_GO_ABS)]
 	$(ENV_GOPATH) go get -d $(RUNC_REPO)/...
+	cd $(TMP_GO_ABS)/src/$(RUNC_REPO) && git checkout $(RUNC_BRANCH)
 	patch -d$(TMP_GO_ABS)/src/$(RUNC_REPO) -p1 < acc-runtime.patch
 	$(ENV_GOPATH) make -C $(TMP_GO_ABS)/src/$(RUNC_REPO)/ BUILDTAGS='apparmor seccomp'
 	@if [ ! -d "$(OUT_DIR)" ]; then mkdir $(OUT_DIR); fi
